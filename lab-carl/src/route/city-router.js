@@ -24,4 +24,19 @@ cityRouter.post('/api/cities', jsonParser, (request, response, next) => {
     .catch(next);
 });
 
+cityRouter.put('/api/cities/:id', jsonParser, (request, response, next) => {
+  const options = { runValidators: true, new: true };
+  return City.findByIdAndUpdate(request.params.id, request.body, options)
+    .then((updatedCity) => {
+      if (!updatedCity) {
+        logger.log(logger.ERROR, 'CITY ROUTER - PUT - responding with 404 status code - (!updatedCity)');
+        return next(new HttpErrors(404, 'city not found'));
+      }
+      logger.log(logger.INFO, 'PUT - CITY ROUTER - responding with 200 status code');
+      return response.json(updatedCity);
+    })
+    .catch(next);
+});
+
+
 export default cityRouter;

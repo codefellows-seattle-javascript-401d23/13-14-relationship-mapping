@@ -20,7 +20,7 @@ describe('api/v1/cities', () => {
   afterEach(() => City.remove({}));
 
   describe('POST api/cities', () => {
-    test('200', () => {
+    test('respond with 200 status for a successful POST', () => {
       const mockCity = {
         name: faker.lorem.words(1),
         population: faker.random.number(),
@@ -48,6 +48,43 @@ describe('api/v1/cities', () => {
         .then(Promise.reject)
         .catch((err) => {
           expect(err.status).toEqual(409);
+        });
+    });
+
+    test('400 due to lack of name', () => {
+      return superagent.post(apiUrl)
+        .send({})
+        .then(Promise.reject)
+        .catch((err) => {
+          expect(err.status).toEqual(400);
+        });
+    });
+    test('400 due to bad json', () => {
+      return superagent.post(apiUrl)
+        .send('{')
+        .then(Promise.reject)
+        .catch((err) => {
+          expect(err.status).toEqual(400);
+        });
+    });
+  });
+
+  describe('PUT api/cities', () => {
+    test('respond with 200 status from a successful PUT', () => {
+      let cityToUpdate = null;
+      return pCreateMockCity()
+        .then((city) => {
+          cityToUpdate = city;
+          console.log('here is the id: ', city._id, city.id);
+          return superagent.put(`${apiUrl}/${city._id}`)
+            .send({ population: 10000 });
+        })
+        .then((response) => {
+          console.log(cityToUpdate);
+          expect(response.status).toEqual(200);
+          expect(response.body.name).toEqual(cityToUpdate.name);
+          expect(response.body.population).toEqual(10000);
+          expect(response.body._id).toEqual(cityToUpdate._id.toString());
         });
     });
   });
