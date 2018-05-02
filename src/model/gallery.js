@@ -1,20 +1,16 @@
 import mongoose from 'mongoose';
 
-const paintingSchema = mongoose.Schema({
-  name: {
+const gallerySchema = mongoose.Schema({
+  galleryName: {
     type: String,
     required: true,
     unique: true,
   },
-  artist: {
+  artists: {
     type: String,
     required: true,
   },
-  style: {
-    type: String,
-    required: false,
-  },
-  era: {
+  residency: {
     type: String,
     required: false,
   },
@@ -24,4 +20,4 @@ const paintingSchema = mongoose.Schema({
   },
 });
 
-export default mongoose.model('painting', paintingSchema);
+export default mongoose.model('gallery', gallerySchema);

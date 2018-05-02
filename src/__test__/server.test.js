@@ -2,97 +2,87 @@
 
 import faker from 'faker';
 import superagent from 'superagent';
-import Painting from '../model/painting';
+import Gallery from '../model/gallery';
 import { startServer, stopServer } from '../lib/server';
 
-const apiURL = `http://localhost:${process.env.PORT}/api/paintings`;
+const apiURL = `http://localhost:${process.env.PORT}/api/gallerys`;
 
-const createPaintingMock = () => {
-  return new Painting({
-    name: faker.lorem.words(10),
-    artist: faker.lorem.words(20),
-    style: faker.lorem.words(20),
-    era: faker.lorem.words(20),
+const createGalleryMock = () => {
+  return new Gallery({
+    galleryName: faker.lorem.words(10),
+    artists: faker.lorem.words(20),
+    residency: faker.lorem.words(20),
   }).save();
 };
 
-describe('/api/paintings', () => {
+describe('/api/gallerys', () => {
   beforeAll(startServer);
   afterAll(stopServer);
-  afterEach(() => Painting.remove({}));
+  afterEach(() => Gallery.remove({}));
   test('POST - it should respond with a 200 status', () => {
-    const paintingToPost = {
-      name: faker.lorem.words(10),
-      artist: faker.lorem.words(20),
-      style: faker.lorem.words(20),
-      era: faker.lorem.words(20),
+    const galleryToPost = {
+      galleryName: faker.lorem.words(10),
+      artists: faker.lorem.words(20),
+      residency: faker.lorem.words(20),
     };
     return superagent.post(apiURL)
-      .send(paintingToPost)
+      .send(galleryToPost)
       .then((response) => {
         expect(response.status).toEqual(200);
-        expect(response.body.name).toEqual(paintingToPost.name);
-        expect(response.body.artist).toEqual(paintingToPost.artist);
-        expect(response.body.style).toEqual(paintingToPost.style);
-        expect(response.body.era).toEqual(paintingToPost.era);
+        expect(response.body.galleryName).toEqual(galleryToPost.galleryName);
+        expect(response.body.artists).toEqual(galleryToPost.artists);
+        expect(response.body.residency).toEqual(galleryToPost.residency);
         expect(response.body._id).toBeTruthy();
         expect(response.body.timestamp).toBeTruthy();
       });
   });
   test('POST - It should respond with a 400 status ', () => {
-    const paintingToPost = {
-      artist: faker.lorem.words(20),
-      style: faker.lorem.words(20),
-      era: faker.lorem.words(20),
+    const galleryToPost = {
+      artists: faker.lorem.words(20),
+      residency: faker.lorem.words(20),
     };
     return superagent.post(apiURL)
-      .send(paintingToPost)
+      .send(galleryToPost)
       .then(Promise.reject)
       .catch((response) => {
         expect(response.status).toEqual(400);
       });
   });
-  describe('GET /api/paintings', () => {
+  describe('GET /api/gallerys', () => {
     test('should respond with 200 if there are no errors', () => {
-      let paintingToTest = null;
-      return createPaintingMock()
-        .then((painting) => {
-          paintingToTest = painting;
-          return superagent.get(`${apiURL}/${painting._id}`);
+      let galleryToTest = null;
+      return createGalleryMock()
+        .then((gallery) => {
+          galleryToTest = gallery;
+          return superagent.get(`${apiURL}/${gallery._id}`);
         })
         .then((response) => {
           expect(response.status).toEqual(200);
-          expect(response.body.name).toEqual(paintingToTest.name);
-          expect(response.body.artist).toEqual(paintingToTest.artist);
-          expect(response.body.style).toEqual(paintingToTest.style);
-          expect(response.body.era).toEqual(paintingToTest.era);
+          expect(response.body.galleryName).toEqual(galleryToTest.galleryName);
+          expect(response.body.artists).toEqual(galleryToTest.artists);
+          expect(response.body.residency).toEqual(galleryToTest.residency);
           expect(response.body._id).toBeTruthy();
           expect(response.body.timestamp).toBeTruthy();
         });
     });
-    test('should respond with 404 if there is no painting to be found', () => {
+    test('should respond with 404 if there is no gallery to be found', () => {
       return superagent.get(`${apiURL}/invalidId`)
         .then(Promise.reject)
         .catch((response) => {
           expect(response.status).toEqual(404);
         });
     });
-    describe('DELETE /api/paintings', () => {
+    describe('DELETE /api/gallerys', () => {
       test('should respond with 204 if there are no errors', () => {
-        let paintingToTest = null;
-        return createPaintingMock() 
-          .then((painting) => {
-            paintingToTest = painting;
-            return superagent.delete(`${apiURL}/${painting._id}`);
+        return createGalleryMock() 
+          .then((gallery) => {
+            return superagent.delete(`${apiURL}/${gallery._id}`);
           })
           .then((response) => {
             expect(response.status).toEqual(204);
-            expect(response.body.artist).toEqual(paintingToTest.artist);
-            expect(response.body.style).toEqual(paintingToTest.style);
-            expect(response.body.era).toEqual(paintingToTest.era);
           });
       });
-      test('should respond with 404 if there is no painting to be found', () => {
+      test('should respond with 404 if there is no gallery to be found', () => {
         return superagent.get(`${apiURL}/ThisIsAnInvalidId`)
           .then(Promise.reject)
           .catch((response) => {
@@ -101,20 +91,20 @@ describe('/api/paintings', () => {
       });
     });
   });
-  describe('PUT /api/paintings', () => {
-    test('should update a painting and return a 200 status code', () => {
-      let paintingToUpdate = null;
-      return createPaintingMock()
-        .then((paintingMock) => {
-          paintingToUpdate = paintingMock;
-          return superagent.put(`${apiURL}/${paintingMock._id}`)
-            .send({ name: 'Testing one two three' });
+  describe('PUT /api/gallerys', () => {
+    test('should update a gallery and return a 200 status code', () => {
+      let galleryToUpdate = null;
+      return createGalleryMock()
+        .then((galleryMock) => {
+          galleryToUpdate = galleryMock;
+          return superagent.put(`${apiURL}/${galleryMock._id}`)
+            .send({ galleryName: 'Testing one two three' });
         })
         .then((response) => {
           expect(response.status).toEqual(200);
-          expect(response.body.name).toEqual('Testing one two three');
-          expect(response.body.author).toEqual(paintingToUpdate.author);
-          expect(response.body._id).toEqual(paintingToUpdate._id.toString());
+          expect(response.body.galleryName).toEqual('Testing one two three');
+          expect(response.body.artists).toEqual(galleryToUpdate.artists);
+          expect(response.body._id).toEqual(galleryToUpdate._id.toString());
         });
     });
   });

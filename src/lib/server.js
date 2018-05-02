@@ -3,7 +3,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import logger from './logger';
-import paintingRoutes from '../route/painting-router';
+import galleryRoutes from '../route/gallery-router';
 import loggerMiddleware from './logger-middleware';
 import errorMiddleware from './error-middleware';
 
@@ -11,7 +11,7 @@ const app = express();
 let server = null;
 
 app.use(loggerMiddleware);
-app.use(paintingRoutes);
+app.use(galleryRoutes);
 
 app.all('*', (request, response) => {
   logger.log(logger.INFO, 'Returning a 404 from the catch-all/default route');
