@@ -108,7 +108,17 @@ describe('/api/food', () => {
           expect(response.body._id).toEqual(foodToUpdate._id.toString());
         });
     });
-    // test('400 for invalid request'
+    test('400 for invalid request', () => {
+      return createFoodMock()
+        .then((food) => {
+          return superagent.put(`${apiURL}/${food._id}`)
+            .send({ name: '' })
+            .then(Promise.reject)
+            .catch((error) => {
+              expect(error.status).toEqual(400);
+            });
+        });
+    });
   });
   describe('DELETE /api/food', () => {
     test('should respond with 204 if no errors', () => {
