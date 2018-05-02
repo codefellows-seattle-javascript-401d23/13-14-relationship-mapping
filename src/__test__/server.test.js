@@ -119,6 +119,20 @@ describe('/api/food', () => {
             });
         });
     });
+    test('404 for bad id', () => {
+      return createFoodMock()
+        .then(() => {
+          return superagent.put(`${apiURL}/badId`)
+            .send({ name: 'new food name' })
+            .then(Promise.reject)
+            .catch((error) => {
+              expect(error.status).toEqual(404);
+            });
+        });
+    });
+    test('409 for duplicate key', () => {
+      
+    });
   });
   describe('DELETE /api/food', () => {
     test('should respond with 204 if no errors', () => {
