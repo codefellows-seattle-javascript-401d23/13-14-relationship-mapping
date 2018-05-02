@@ -39,6 +39,19 @@ foodRouter.get('/api/food/:id', (request, response, next) => {
     .catch(next);
 });
 
+foodRouter.put('/api/food/:id', jsonParser, (request, response, next) => {
+  const options = { runValidators: true, new: true };
+  return Food.findByIdAndUpdate(request.params.id, request.body, options)
+    .then((updatedFood) => {
+      if (!updatedFood) {
+        logger.log(logger.ERROR, 'FOOD-ROUTER: PUT - responding 404 - !updatedFood');
+        return next(new HttpErrors(404, 'food not found'));
+      }
+      logger.log(logger.INFO, 'FOOD-ROUTER: PUT - responding 200');
+      return response.json(updatedFood);
+    })
+    .catch(next);
+});
 
 foodRouter.delete('/api/food/:id?', (request, response, next) => {
   logger.log(logger.INFO, 'FOOD-ROUTER: DELETE - Processing a request');

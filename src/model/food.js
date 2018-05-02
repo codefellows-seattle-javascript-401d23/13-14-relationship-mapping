@@ -17,6 +17,11 @@ const foodSchema = mongoose.Schema({
     type: Date,
     default: () => new Date(),
   },
+  cuisines: [
+    {
+      type: mongoose.Schema.Types.ObjectId, ref: 'cuisine',
+    },
+  ],
 });
 
 export default mongoose.model('food', foodSchema);
