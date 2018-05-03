@@ -3,12 +3,19 @@
 import mongoose from 'mongoose';
 
 const categorySchema = mongoose.Schema({
-  title: {
+  videoconsole: {
     type: String,
     required: true,
     unique: true,
   },
-  content: {
+  videogame: {
+    type: String,
+    required: true,
+  },
+  genre: {
+    type: String,
+  },
+  rating: {
     type: String,
   },
   timestamp: {

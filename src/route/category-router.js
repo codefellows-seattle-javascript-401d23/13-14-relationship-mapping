@@ -12,9 +12,9 @@ const jsonParser = bodyParser.json();
 const categoryRouter = new Router();
 
 categoryRouter.post('/api/categories', jsonParser, (request, response, next) => {
-  if (!request.body.title) {
+  if (!request.body.videoconsole) {
     logger.log(logger.ERROR, 'CATEGORY-ROUTER: Responding with 400 error code');
-    return next(new HttpErrors(400, 'Category title is required'));
+    return next(new HttpErrors(400, 'Category videoconsole is required'));
   }
 
   return new Category(request.body).save()

@@ -9,8 +9,8 @@ const apiUrl = `http://localhost:${process.env.PORT}/api/categories`;
 
 const pCreateCategoryMock = () => {
   return new Category({
-    title: faker.lorem.words(15),
-    content: faker.lorem.words(2),
+    videoconsole: faker.lorem.words(15),
+    videogame: faker.lorem.words(2),
   }).save();
 };
 
@@ -22,25 +22,25 @@ describe('api/categories', () => {
   describe('POST api/categories', () => {
     test('200', () => {
       const mockCategory = {
-        title: faker.lorem.words(10),
-        content: faker.lorem.words(50),
+        videoconsole: faker.lorem.words(10),
+        videogame: faker.lorem.words(50),
       };
       return superagent.post(apiUrl)
         .send(mockCategory)
         .then((response) => {
           expect(response.status).toEqual(200);
           expect(response.body._id).toBeTruthy();
-          expect(response.body.title).toEqual(mockCategory.title);
-          expect(response.body.content).toEqual(mockCategory.content);
+          expect(response.body.videoconsole).toEqual(mockCategory.videoconsole);
+          expect(response.body.videogame).toEqual(mockCategory.videogame);
         });
     });
 
-    test('409 due to duplicate title', () => {
+    test('409 due to duplicate videoconsole', () => {
       return pCreateCategoryMock()
         .then((category) => {
           const mockCategory = {
-            title: category.title,
-            content: category.content,
+            videoconsole: category.videoconsole,
+            videogame: category.videogame,
           };
           return superagent.post(apiUrl)
             .send(mockCategory);
@@ -51,7 +51,7 @@ describe('api/categories', () => {
         });
     });
 
-    test('400 due to lack of title', () => {
+    test('400 due to lack of videoconsole', () => {
       return superagent.post(apiUrl)
         .send({})
         .then(Promise.reject)
@@ -77,12 +77,12 @@ describe('api/categories', () => {
         .then((category) => {
           categoryToUpdate = category;
           return superagent.put(`${apiUrl}/${category._id}`)
-            .send({ title: 'I HAVE A NEW CATEGORY TITLE' });
+            .send({ videoconsole: 'I HAVE A NEW CATEGORY TITLE' });
         })
         .then((response) => {
           expect(response.status).toEqual(200);
-          expect(response.body.title).toEqual('I HAVE A NEW CATEGORY TITLE');
-          expect(response.body.content).toEqual(categoryToUpdate.content);
+          expect(response.body.videoconsole).toEqual('I HAVE A NEW CATEGORY TITLE');
+          expect(response.body.videogame).toEqual(categoryToUpdate.videogame);
           expect(response.body._id).toEqual(categoryToUpdate._id.toString());
         });
     });
