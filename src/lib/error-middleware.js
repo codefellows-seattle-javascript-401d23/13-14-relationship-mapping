@@ -36,5 +36,5 @@ export default (error, request, response, next) => {
 
   logger.log(logger.ERROR, 'Responding with a 500 error code');
   logger.log(logger.ERROR, error);
-  return response.sendStatus(500);
-}
+  return response.status(500).send(error);
+};

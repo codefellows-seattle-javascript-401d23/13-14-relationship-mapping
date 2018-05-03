@@ -14,14 +14,14 @@ const parkRouter = new Router(); // our parent router now!
 
 parkRouter.post('/api/parks', jsonParser, (request, response, next) => {
   logger.log(logger.INFO, 'PARK POST - processing a request');
-  if (!request.body.name) {
-    logger.log(logger.INFO, 'PARK-ROUTER: Responding with a 400 error code');// 400 is BAD REQUEST
-    return next(new HttpErrors(400, 'Park name is required'));
-  }
-  if (!request.body.city) {
-    logger.log(logger.INFO, 'PARK-ROUTER: Responding with a 400 error code');// 400 is BAD REQUEST
-    return next(new HttpErrors(400, 'Park city is required'));
-  }
+  // if (!request.body.name) {
+  //   logger.log(logger.INFO, 'PARK-ROUTER: Responding with a 400 error code');// 400 is BAD REQUEST
+  //   return next(new HttpErrors(400, 'Park name is required'));
+  // }
+  // if (!request.body.city) {
+  //   logger.log(logger.INFO, 'PARK-ROUTER: Responding with a 400 error code');// 400 is BAD REQUEST
+  //   return next(new HttpErrors(400, 'Park city is required'));
+  // }
   return new Park(request.body).save() // mongoose schema allows us to do this, .save is a mongoose method--- we no need import here, because it is imported in our schema file
     .then((park) => {
       logger.log(logger.INFO, 'PARK POST - responding with a 200 status code');
@@ -33,13 +33,20 @@ parkRouter.post('/api/parks', jsonParser, (request, response, next) => {
 parkRouter.put('/api/parks/:id', jsonParser, (request, response, next) => {
   logger.log(logger.INFO, 'PARK PUT - processing a request');
   const options = { runValidators: true, new: true };// this is something we have to do in order to keep or database consistent by triggering mongoose's validation check, new: true means it will return your change to you, other wise would still work, but we'd have to do more stuff to get it back eessentially
-
   return Park.findByIdAndUpdate(request.params.id, request.body, options)
     .then((updatedPark) => { 
-      if (!updatedPark) {
-        logger.log(logger.ERROR, 'PARK PUT - responding with a 404 status code - (!park)');
-        return next(new HttpErrors(404, 'park not found'));
-      }
+      // if (request.body.name.length < 10) {
+      //   logger.log(logger.INFO, 'PARK-ROUTER: Responding with a 400 error code');// 400 is BAD REQUEST
+      //   return next(new HttpErrors(400, 'Park name is too short!'));
+      // }
+      // if (!updatedPark) {
+      //   logger.log(logger.ERROR, 'PARK PUT - responding with a 404 status code - (!park)');
+      //   return next(new HttpErrors(404, 'park not found'));
+      // }
+      // if (request.body.name === response.body.name) {
+      //   logger.log(logger.INFO, 'PARK-ROUTER: Responding with a 409 error code');
+      //   return next(new HttpErrors(409, 'Park name must be unique!'));
+      // }
       logger.log(logger.INFO, 'PARK PUT - responding with a 200 status code');
       logger.log(logger.INFO, `PARK PUT - resource is: ${updatedPark}`);
       return response.json(updatedPark);
