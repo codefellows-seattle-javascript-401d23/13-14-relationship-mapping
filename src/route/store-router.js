@@ -52,7 +52,7 @@ storeRouter.delete('/api/store/:id', (request, response, next) => {
   return Store.findByIdAndRemove(request.params.id)
     .then((store) => {
       if (!store) {
-        logger.log(logger.ERROR, 'STORE ROUTER - GET - responding with 404');
+        logger.log(logger.ERROR, 'STORE ROUTER - DELETE - responding with 404');
         return next(new HttpErrors(404, 'category not found'));
       }
       logger.log(logger.INFO, 'STORE ROUTER - GET - responding with 204 status code');
