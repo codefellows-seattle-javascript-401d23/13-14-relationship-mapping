@@ -57,7 +57,7 @@ describe('/api/food', () => {
           return superagent.post(apiURL)
             .send(mockFood);
         })
-        .then(Promise.reject)
+        // .then(Promise.reject)
         .catch((error) => {
           expect(error.status).toEqual(409);
         });
@@ -113,7 +113,6 @@ describe('/api/food', () => {
         .then((food) => {
           return superagent.put(`${apiURL}/${food._id}`)
             .send({ name: '' })
-            .then(Promise.reject)
             .catch((error) => {
               expect(error.status).toEqual(400);
             });
@@ -124,6 +123,7 @@ describe('/api/food', () => {
         .then(() => {
           return superagent.put(`${apiURL}/badId`)
             .send({ name: 'new food name' })
+            
             .then(Promise.reject)
             .catch((error) => {
               expect(error.status).toEqual(404);
@@ -131,7 +131,14 @@ describe('/api/food', () => {
         });
     });
     test('409 for duplicate key', () => {
-      
+      return createFoodMock()
+        .then((food) => {
+          return superagent.put(`${apiURL}/${food._id}`)
+            .send({ name: food.name })
+            .catch((error) => {
+              expect(error.status).toEqual(409);
+            });
+        });
     });
   });
   describe('DELETE /api/food', () => {
