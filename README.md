@@ -2,7 +2,7 @@ Lab 13: Single Resource Mongo and Express API
 
 **Author:** Jennifer Piper
 
-This is a very simple REST API, to store and retrieve info about countries. With help from Mongoose and Express, it will store name, continent, languages, and notable foods for each item.
+This is a very simple REST API, to store and retrieve info about countries. With help from Mongoose and Express, it will store name, continent, population, and info for each item.
 ## Getting Started
 In a node.js environment, from the root of this repo, install dependencies:
 * `npm i`
@@ -21,7 +21,7 @@ To turn off the database server:
 
 * To create a new country resource:
 
-  POST /api/v1/country name='country name' continent='country continent' languages='language a, language b' food='food a, food b'
+  POST /api/v1/country name='country name' continent='country continent' population='x million' info='known for exports of beer and fancy paper clips'
  
  This will return a JSON object including a newly-generated id which can be used to retrieve that resource.
  

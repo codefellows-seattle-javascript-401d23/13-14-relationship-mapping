@@ -12,8 +12,8 @@ const createCountryMock = () => {
   return new Country({
     name: faker.lorem.words(2),
     continent: faker.lorem.words(2),
-    languages: faker.lorem.words(3),
-    foods: faker.lorem.words(10),
+    population: faker.lorem.words(3),
+    info: faker.lorem.words(10),
   }).save();
 };
 
@@ -26,21 +26,21 @@ describe('VALID request to the API', () => {
       const countryToPost = {
         name: faker.lorem.words(10),
         continent: faker.lorem.words(2),
-        foods: faker.lorem.words(7),
-        languages: faker.lorem.words(5),
+        info: faker.lorem.words(7),
+        population: faker.lorem.words(5),
       };
       return superagent.post(apiURL)
         .send(countryToPost)
         .then((response) => {
           expect(response.status).toEqual(200);
           expect(response.body.name).toEqual(countryToPost.name);
-          expect(response.body.languages).toEqual(countryToPost.languages);
+          expect(response.body.population).toEqual(countryToPost.population);
           expect(response.body._id).toBeTruthy();
         });
     });
     test('POST - It should respond with a 400 status', () => {
       const countryToPost = {
-        languages: faker.lorem.words(50),
+        population: faker.lorem.words(50),
       };
       return superagent.post(apiURL)
         .send(countryToPost)
@@ -61,8 +61,8 @@ describe('VALID request to the API', () => {
             expect(response.status).toEqual(200);
             expect(response.body.name).toEqual(countryToTest.name);
             expect(response.body.continent).toEqual(countryToTest.continent);
-            expect(response.body.languages).toEqual(countryToTest.languages);
-            expect(response.body.foods).toEqual(countryToTest.foods);
+            expect(response.body.population).toEqual(countryToTest.population);
+            expect(response.body.info).toEqual(countryToTest.info);
           });
       });
       test('should respond with 404 if there is no country found', () => {

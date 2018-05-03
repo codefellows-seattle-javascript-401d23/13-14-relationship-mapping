@@ -12,12 +12,17 @@ const countrySchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  languages: {
+  population: {
     type: String,
   },
-  foods: {
+  info: {
     type: String,
   },
+  landmarks: [
+    {
+      type: mongoose.Schema.Types.ObjectId, ref: 'landmark',
+    },
+  ],
 });
 
 export default mongoose.model('country', countrySchema);
