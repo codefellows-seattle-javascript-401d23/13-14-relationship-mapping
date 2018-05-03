@@ -35,7 +35,6 @@ storeRouter.put('/api/store/:id', jsonParser, (request, response, next) => {
 });
 
 storeRouter.get('/api/store/:id', (request, response, next) => {
-  console.log('get request.params.id', request.params.id);
   return Store.findById(request.params.id)
     .then((store) => {
       if (!store) {
