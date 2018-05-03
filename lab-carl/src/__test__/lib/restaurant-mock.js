@@ -15,6 +15,7 @@ const pCreateRestaurantMock = () => {
       return new Restaurant({
         name: faker.lorem.words(2),
         cuisine: faker.lorem.words(2),
+        neighborhood: faker.lorem.words(3),
         city: createdCity._id,
       }).save();
     })

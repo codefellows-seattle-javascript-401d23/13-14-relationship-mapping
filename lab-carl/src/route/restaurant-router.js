@@ -10,7 +10,10 @@ const jsonParser = bodyParser.json();
 const restaurantRouter = new Router();
 
 restaurantRouter.post('/api/restaurants', jsonParser, (request, response, next) => {
-  // TODO: Optional validation
+  if (!request.body.name) {
+    logger.log(logger.ERROR, 'RESTAURANT_ROUTER - POST - Responding with 400 code - (!name)');
+    return next(new HttpError(400, 'restaurant name is required'));
+  }
 
   return new Restaurant(request.body).save()
     .then((restaurant) => {
@@ -27,12 +30,36 @@ restaurantRouter.put('/api/restaurants/:id', jsonParser, (request, response, nex
   return Restaurant.findByIdAndUpdate(request.params.id, request.body, options)
     .then((updatedRestaurant) => {
       if (!updatedRestaurant) {
-        return next(new HttpError(404, 'restaurant to update not found'));
+        return next(new HttpError(404, 'RESTAURANT ROUTER - PUT - restaurant to update not found'));
       }
       logger.log(logger.INFO, 'RESTAURANT ROUTER - PUT - responding with a 200 status code');
       return response.json(updatedRestaurant);
     })
     .catch(next);
 });
+
+restaurantRouter.get('/api/restaurants/:id', (request, response, next) => {
+  return Restaurant.findById(request.params.id)
+    .then((restaurant) => {
+      if (!restaurant) {
+        return next(new HttpError(404, 'GET - restaurant not found'));
+      }
+      logger.log(logger.INFO, 'RESTAURANT ROUTER - GET - responding with a 200 status code');
+      return response.json(restaurant);
+    })
+    .catch(next);
+});
+
+restaurantRouter.delete('/api/restaurants/:id', (request, response, next) => {
+  return Restaurant.findByIdAndRemove(request.params.id)
+    .then((restaurant) => {
+      if (!restaurant) {
+        return next(new HttpError(404, 'RESTAURANT ROUTER - DELETE - restaurant not found'));
+      }
+      logger.log(logger.INFO, 'RESTAURANT ROUTER - DELETE - responding with a 204 status code');
+      return response.sendStatus(204);
+    });
+});
+
 
 export default restaurantRouter;

@@ -1,7 +1,7 @@
 'use strict';
 
 import faker from 'faker';
-import City from '../../model/city';
+import City from '../../model/city-model';
 
 const pCreateCityMock = () => {
   return new City({

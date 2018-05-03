@@ -1,9 +1,9 @@
-# Lab 13 - Single Resource Mongo and Express API
+# Lab 14 - Single Resource Mongo and Express API
 **Author**: Carl Olson
 **Version**: 1.0.0
 
 ## Overview
-This lab project was a continuation of the previous express and mongodb lab. I used express to handle http requests and MongoDB with mongoose for persistence. My mongoose model is of a city, which has properties of name, population, and a timestamp.
+This lab project was a continuation of the previous lab. I used express to handle http requests and MongoDB with mongoose for persistence. My mongoose model is of a city, which has properties of name, population, and a timestamp.
 
 Middleware is used for parsing (route level), logging (app level), error handling (app level).
 
