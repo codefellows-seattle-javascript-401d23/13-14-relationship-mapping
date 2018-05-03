@@ -45,8 +45,25 @@ describe('VALID request to the API', () => {
       return superagent.post(apiURL)
         .send(countryToPost)
         .then(Promise.reject)
-        .catch((response) => {
-          expect(response.status).toEqual(400);
+        .catch((error) => {
+          expect(error.status).toEqual(400);
+        });
+    });
+    test('POST - It should respond with a 409 status', () => {
+      return createCountryMock()
+        .then((country) => {
+          const countryToPost = {
+            name: country.name,
+            continent: faker.lorem.words(2),
+            info: faker.lorem.words(7),
+            population: faker.lorem.words(5),
+          };
+          return superagent.post(apiURL)
+            .send(countryToPost)
+            .then(Promise.reject)
+            .catch((error) => {
+              expect(error.status).toEqual(409);
+            });
         });
     });
     describe('PUT /api/v1/country', () => {
@@ -69,8 +86,18 @@ describe('VALID request to the API', () => {
       test('should respond with 404 if there is no country found', () => {
         return superagent.put(`${apiURL}/ABunchOfNonsense`)
           .then(Promise.reject)
-          .catch((response) => {
-            expect(response.status).toEqual(404);
+          .catch((error) => {
+            expect(error.status).toEqual(404);
+          });
+      });
+      test('PUT - 400 for bad request ', () => {
+        return createCountryMock()
+          .then((country) => {
+            return superagent.put(`${apiURL}/${country._id}`)
+              .send({ name: '' });
+          })
+          .catch((error) => {
+            expect(error.status).toEqual(400);
           });
       });
     });
@@ -93,8 +120,8 @@ describe('VALID request to the API', () => {
       test('should respond with 404 if there is no country found', () => {
         return superagent.get(`${apiURL}/ABunchOfNonsense`)
           .then(Promise.reject)
-          .catch((response) => {
-            expect(response.status).toEqual(404);
+          .catch((error) => {
+            expect(error.status).toEqual(404);
           });
       });
     });
@@ -102,8 +129,8 @@ describe('VALID request to the API', () => {
       test('should respond with 404 status if id is invalid', () => {
         return superagent.delete(`${apiURL}/ThisIsABadID`)
           .then(Promise.reject)
-          .catch((err) => {
-            expect(err.status).toEqual(404);
+          .catch((error) => {
+            expect(error.status).toEqual(404);
           });
       });
       test('should respond with 204 status', () => {
