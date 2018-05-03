@@ -2,26 +2,23 @@
 
 import faker from 'faker';
 import Park from '../model/park';
-const apiURL = `http://localhost:${process.env.PORT}/api/parks`;
 
-
-// this will get cumbersome so need make new file to do this
-const createParkMock = () => {
+const pCreateParkMock = () => {
   return new Park({
-    name: faker.lorem.words(12),
-    city: faker.lorem.words(12),
-    neighborhood: faker.lorem.words(11),
+    name: faker.lorem.words(5),
+    city: faker.lorem.words(5),
+    neighborhood: faker.lorem.words(5),
     acreage: faker.finance.amount(1, 10),
   }).save(); 
 };
 
-const createManyParkMocks = (howManyNotes) => {
-  return Promise.all(new Array(howManyNotes)
+const pCreateManyParkMocks = (howManyParks) => {
+  return Promise.all(new Array(howManyParks)
     .fill(0)
-    .map(() => createParkMock()));
+    .map(() => pCreateParkMock()));
 };
 
-// need create one to remove categories
+const pRemoveParkMock = () => { Park.remove({}); };
 
 
-export { createParkMock, createManyParkMocks };
+export { pCreateParkMock, pCreateManyParkMocks, pRemoveParkMock };

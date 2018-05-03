@@ -2,15 +2,17 @@
 
 // how do we create a category and then a card, while keeping things atomic for testing??
 import faker from 'faker';
+import logger from '../lib/logger';
 import Tree from '../model/tree';
-import * as parkMock from './park-mock'; // -- the same as destructured {this, that} -- * just grabs all, this is considered bad practice, cause hsould only import what you absolutely need-- using here just to see it-- but is considered BAD PRACTICE
+import { pCreateParkMock, pRemoveParkMock } from './park-mock'; // -- the same as destructured {this, that} -- * just grabs all, this is considered bad practice, cause hsould only import what you absolutely need-- using here just to see it-- but is considered BAD PRACTICE
 
 const pCreateTreeMock = () => {
 
-  const resultMock = {};
+  let resultMock = {};
 
-  return parkMock.pCreateParkMock()
+  return pCreateParkMock()
     .then((createdPark) => {
+      logger.log(logger.INFO, `createdPark mock in tree-mock is: ${createdPark}`);
       resultMock.park = createdPark;// making this data accessible below see line 25
       // step 2.
       return new Tree ({
@@ -21,21 +23,27 @@ const pCreateTreeMock = () => {
       }).save();
     })
     .then((newTree) => {
-      resultMock.trees = newTree;
+      resultMock = newTree;
       // resultMock.park = createdPark;< -- we cannot access as is, must save it in accesible scope, ie on line 10-- this we saving our 'createdPark' as resultMock
       return resultMock;
     });
+};
+// TODO: I think this function needs to be refactored... we only would want one park...
+const pCreateManyTreeMocks = (howManyTrees) => {
+  return Promise.all(new Array(howManyTrees)
+    .fill(0)
+    .map(() => pCreateTreeMock()));
 };
 
 // good practice here is to first remove children, then the parent --> first destroy the many, then the one
 const pRemoveTreeMock = () => { Promise.all([
   Tree.remove({}),
-  parkMock.pRemoveParkMock(),
+  pRemoveParkMock(),
 ]);
 };
 
 
-export { pCreateTreeMock, pRemoveTreeMock };
+export { pCreateTreeMock, pCreateManyTreeMocks, pRemoveTreeMock };
 
 /* 
 1. create parent mock

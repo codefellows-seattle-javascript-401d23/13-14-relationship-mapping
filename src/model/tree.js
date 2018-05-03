@@ -22,7 +22,7 @@ const treeSchema = mongoose.Schema({
   genus: {
     type: String,
     required: true,
-    minlength: 10,
+    minlength: 1,
   },
   height: {
     type: String,
@@ -49,7 +49,7 @@ function treePreHook(done) {
 
   // here 'this'/ 'contextual this' is the document
   return Park.findById(this.park)
-    .then((parkFound) =>{
+    .then((parkFound) => {
       if (!parkFound) {
         throw new HttpError(404, 'park not found!');
         // we need to throw error, because we are not in req/res loop-- dont have access to our server next set up-- by throwing error our mongoose response is now an error and can trigger the functionality we've set up else where....?
