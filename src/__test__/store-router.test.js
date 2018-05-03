@@ -122,6 +122,14 @@ describe('api/store', () => {
           expect(response.status).toEqual(404);
         });
     });
+
+    test('GET request receives a 404 status code for no id', () => {
+      return superagent.get(`${apiUrl}`)
+        .then(Promise.reject)
+        .catch((response) => {
+          expect(response.status).toEqual(404);
+        });
+    });
   });
 
   describe('DELETE /api/store', () => {
@@ -134,5 +142,14 @@ describe('api/store', () => {
           expect(response.status).toEqual(204);
         });
     });
+    test('DELETE request receives a 404 status code for no id', () => {
+      return superagent.delete(`${apiUrl}`)
+        .then(Promise.reject)
+        .catch((response) => {
+          expect(response.status).toEqual(404);
+        });
+    });
   });
 });
+
+.
