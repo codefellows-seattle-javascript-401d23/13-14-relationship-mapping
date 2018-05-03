@@ -3,29 +3,14 @@
 import faker from 'faker';
 import superagent from 'superagent';
 import { startServer, stopServer } from '../lib/server';
-import Podcast from '../model/podcast';
+import { createMockPodcastProm, createManyMockPodcastsProm, removePodcastMockProm } from './lib/podcast-mock';
 
 const apiURL = `http://localhost:${process.env.PORT}/api/podcasts`;
 const badURL = `http://localhost:${process.env.PORT}/api/INVALIDMODEL`;
 
-const createMockPodcastProm = () => {
-  return new Podcast({
-    name: faker.company.catchPhrase(),
-    genre: faker.random.word(),
-    host: faker.name.findName(),
-    parentCompany: faker.company.companyName(),
-  }).save();
-};
-
-const createManyMockPodcastsProm = (length) => {
-  return Promise.all(new Array(length)
-    .fill(0)
-    .map(() => createMockPodcastProm()));
-};
-
 beforeAll(startServer);
 afterAll(stopServer);
-afterEach(() => Podcast.remove({}));
+afterEach(removePodcastMockProm);
 
 describe('/api/podcasts', () => {
   describe('POST /api/podcasts', () => {

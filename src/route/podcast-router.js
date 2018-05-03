@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
 import HttpErrors from 'http-errors';
-import Podcast from '../model/podcast';
+import Podcast from '../model/podcast-model';
 import logger from '../lib/logger';
 
 const jsonParser = bodyParser.json();
