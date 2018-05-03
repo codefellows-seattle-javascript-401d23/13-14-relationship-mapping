@@ -49,6 +49,24 @@ describe('VALID request to the API', () => {
           expect(response.status).toEqual(400);
         });
     });
+    describe('PUT /api/v1/country', () => {
+      test('200 for successful PUT', () => {
+        let countryToUpdate = null;
+        return createCountryMock()
+          .then((country) => {
+            countryToUpdate = country;
+            return superagent.put(`${apiURL}/${country._id}`)
+              .send({ info: 'This is new info for this country.' });
+          })
+          .then((response) => {
+            expect(response.status).toEqual(200);
+            expect(response.body.info).toEqual('This is new info for this country.');
+            expect(response.body.name).toEqual(countryToUpdate.name);
+            expect(response.body.population).toEqual(countryToUpdate.population);
+            expect(response.body._id).toEqual(countryToUpdate._id.toString());
+          });
+      });
+    });
     describe('GET /api/v1/country', () => {
       test('should respond with 200 if there are no errors', () => {
         let countryToTest = null;

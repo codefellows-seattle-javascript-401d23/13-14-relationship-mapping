@@ -23,6 +23,20 @@ countryRouter.post('/api/v1/country', jsonParser, (request, response, next) => {
     .catch(next);
 });
 
+countryRouter.put('/api/v1/country/:id', jsonParser, (request, response, next) => {
+  const options = { runValidators: true, new: true };
+  return Country.findByIdAndUpdate(request.params.id, request.body, options)
+    .then((updatedCountry) => {
+      if (!updatedCountry) {
+        logger.log(logger.INFO, 'PUT - responding with a 404 status code - (!country)');
+        return next(new HttpErrors(404, 'country not found'));
+      }
+      logger.log(logger.INFO, 'PUT - responding with a 200 status code');
+      return response.json(updatedCountry);
+    })
+    .catch(next);
+});
+
 countryRouter.get('/api/v1/country/:id', (request, response, next) => {
   logger.log(logger.INFO, 'GET - processing a request');
   return Country.findById(request.params.id)
