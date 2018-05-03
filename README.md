@@ -24,7 +24,10 @@ To turn off the database server:
   POST /api/v1/country name='country name' continent='country continent' population='x million' info='known for exports of beer and fancy paper clips'
  
  This will return a JSON object including a newly-generated id which can be used to retrieve that resource.
- 
+
+* To update a resource by id, for example if id is '1234-5678':
+
+    PUT /api/v1/country/1234-5678 info='This is updated info'
  
  * To retrieve a resource by id, for example if id is '1234-5678':
 
