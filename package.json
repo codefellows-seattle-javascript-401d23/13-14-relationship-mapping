@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage --forceExit --runInBand park-router.test.js",
+    "test": "jest --coverage --forceExit --runInBand tree-router1.test.js",
     "dbon": "mkdir -p ./db && mongod --dbpath ./db",
     "dboff": "killall mongod"
   },

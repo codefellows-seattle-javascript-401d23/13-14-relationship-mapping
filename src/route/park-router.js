@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 import bodyParser from 'body-parser';
-import HttpErrors from 'http-errors';
+// import HttpErrors from 'http-errors';
 import Park from '../model/park';
 import logger from '../lib/logger';
 

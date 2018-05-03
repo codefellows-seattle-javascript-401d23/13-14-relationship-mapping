@@ -4,23 +4,28 @@ import faker from 'faker';
 import superagent from 'superagent';
 import Park from '../model/park';
 import { startServer, stopServer } from '../lib/server';
+import { createParkMock, createManyParkMocks } from './park-mock';
 
 const apiURL = `http://localhost:${process.env.PORT}/api/parks`;
 
-const createParkMock = () => {
-  return new Park({
-    name: faker.lorem.words(12),
-    city: faker.lorem.words(12),
-    neighborhood: faker.lorem.words(11),
-    acreage: faker.finance.amount(1, 10),
-  }).save(); 
-};
 
-const createManyParkMocks = (howManyNotes) => {
-  return Promise.all(new Array(howManyNotes)
-    .fill(0)
-    .map(() => createParkMock()));
-};
+// // this will get cumbersome so need make new file to do this
+// const createParkMock = () => {
+//   return new Park({
+//     name: faker.lorem.words(12),
+//     city: faker.lorem.words(12),
+//     neighborhood: faker.lorem.words(11),
+//     acreage: faker.finance.amount(1, 10),
+//   }).save(); 
+// };
+
+// const createManyParkMocks = (howManyNotes) => {
+//   return Promise.all(new Array(howManyNotes)
+//     .fill(0)
+//     .map(() => createParkMock()));
+// };
+
+//  using imported mock parks now, all is working! :)
 
 describe('/api/parks', () => {
   beforeAll(startServer); 
