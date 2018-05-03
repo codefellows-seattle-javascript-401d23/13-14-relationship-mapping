@@ -143,7 +143,7 @@ describe('api/store', () => {
         });
     });
     test('DELETE request receives a 404 status code for no id', () => {
-      return superagent.get(`${apiUrl}`)
+      return superagent.delete(`${apiUrl}`)
         .then(Promise.reject)
         .catch((response) => {
           expect(response.status).toEqual(404);
