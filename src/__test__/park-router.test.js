@@ -1,7 +1,5 @@
 'use strict';
 
-// Can rename this file to tree-route.test because we are actually testing our endpoints, not so much our server
-
 import faker from 'faker';
 import superagent from 'superagent';
 import Park from '../model/park';
@@ -15,7 +13,7 @@ const createParkMock = () => {
     city: faker.lorem.words(12),
     neighborhood: faker.lorem.words(11),
     acreage: faker.finance.amount(1, 10),
-  }).save(); // a method for the mongoDB, this is what saves the mock as a new entry
+  }).save(); 
 };
 
 const createManyParkMocks = (howManyNotes) => {
@@ -27,7 +25,7 @@ const createManyParkMocks = (howManyNotes) => {
 describe('/api/parks', () => {
   beforeAll(startServer); 
   afterAll(stopServer);
-  afterEach(() => Park.remove({}));// empty object tells mongoose/mongo? to remove everything!
+  afterEach(() => Park.remove({}));
 
   describe('POST /api/parks', () => {
     test('POST - It should respond with a 200 status ', () => {
@@ -44,7 +42,7 @@ describe('/api/parks', () => {
           expect(response.body.name).toEqual(parkToPost.name);
           expect(response.body.city).toEqual(parkToPost.city);
           expect(response.body.neighborhood).toEqual(parkToPost.neighborhood);
-          expect(response.body._id).toBeTruthy();// ._id means mongoDB succesfully posted my object, and generated a unique ._id for it
+          expect(response.body._id).toBeTruthy();
         });
     });
     test('POST - Should respond with 409 due to duplicate title', () => {
@@ -54,9 +52,10 @@ describe('/api/parks', () => {
             name: park.name,
             city: park.city,
           };
-          return superagent.post(apiURL)
+          return superagent
+            .post(apiURL)
             .send(mockPark)
-            .then(Promise.reject)// we are putting this here because we WANT an error and want to do our logic in the catch block -- so if for whatver reason we get a successful return, we want to reject it and pass it to our catch block-- just saving our selves some time
+            .then(Promise.reject)
             .catch((err) => {
               console.log('POST 409 error', err);
               expect(err.status).toEqual(409);
@@ -67,7 +66,8 @@ describe('/api/parks', () => {
       const parkToPost = {
         name: faker.lorem.words(3),
       };
-      return superagent.post(apiURL)
+      return superagent
+        .post(apiURL)
         .send(parkToPost)
         .then(Promise.reject)
         .catch((response) => {
@@ -75,32 +75,14 @@ describe('/api/parks', () => {
         });
     });
   });
-  
-  /* NOTES FROM CLASS DEVELOPING A NEW TEST
-
-
-  test ('400 due to lack of title'), () => {
-  return superagent.post(apiURL)
-  .send({})
-  .then 
-  .catch((err) =>{
-    SIDE NOTE: even in this block you could do something to it
-    return it... and could then can now do a .then iff you wanted
-  }).then <--- so could chain a .then after it /// but should try to avoid this unless (like in my hacky solution...) you have a good reason, because its  pretty confusing
-  }
-  test ('400 due to bad JSON', () =>{
-    return superagent.post(apiURL)
-    .send('{')
-  })
-*/
-
   describe('GET /api/parks', () => {
     test('should respond with 200 if there are no errors', () => {
       let parkToTest = null;
       return createParkMock()
         .then((park) => {
           parkToTest = park;
-          return superagent.get(`${apiURL}/${park._id}`);
+          return superagent
+            .get(`${apiURL}/${park._id}`);
         })
         .then((response) => {
           expect(response.status).toEqual(200);
@@ -109,22 +91,39 @@ describe('/api/parks', () => {
         });
     });
     test('should respond with 404 if there is no park to be found', () => {
-      return superagent.get(`${apiURL}/NOTVALID`)
+      return superagent
+        .get(`${apiURL}/NOTVALID`)
         .then(Promise.reject)
         .catch((response) => {
           expect(response.status).toEqual(404);
         });
     });
   });
-
-
+  describe('GET ALL /api/parks', () => {
+    test('should respond with 200 if there are no errors', () => {
+      let parkToTest = null;
+      return createManyParkMocks(5) 
+        .then((parkArray) => {
+          parkToTest = parkArray[0]; // how do I use array desctructuring?
+          return superagent.get(`${apiURL}`);
+        })
+        .then((response) => {
+          console.log('GET ALL RESPONSE: ', response);
+          expect(response.status).toEqual(200);
+          expect(response.body.length).toBeTruthy();
+          // expect(response.body.length).toHaveLength(5);
+          // expect(response.body[0].name).toEqual(parkToTest.name);
+        });
+    });
+  });
   describe('PUT /api/parks', () => {
     test('should update a park and respond with 200 if there are no errors', () => {
       let parkToTest = null;
       return createParkMock()
         .then((park) => {
           parkToTest = park;
-          return superagent.put(`${apiURL}/${park._id}`)
+          return superagent
+            .put(`${apiURL}/${park._id}`)
             .send({ city: 'park test test city' });
           // you could also .then from super agent, becuase it returns a promise, no need jests system?
         })
@@ -143,17 +142,18 @@ describe('/api/parks', () => {
             name: 'not long enough',
             city: '1',
           };
-          return superagent.put(`${apiURL}/${park._id}`)
+          return superagent
+            .put(`${apiURL}/${park._id}`)
             .send(parkToTest)
             .then(Promise.reject)
             .catch((response) => {
               expect(response.status).toEqual(400);
             });
         })
-     
     });
     test('PUT - Invalid Endpoint, should respond with 404', () => {
-      return superagent.put(`${apiURL}/NOTVALID`)
+      return superagent
+        .put(`${apiURL}/NOTVALID`)
         .then(Promise.reject)
         .catch((response) => {
           expect(response.status).toEqual(404);
@@ -180,24 +180,6 @@ describe('/api/parks', () => {
         });
     });
   });
-
-
-  describe('GET ALL /api/parks', () => {
-    test('should respond with 200 if there are no errors', () => {
-      let parkToTest = null; 
-      return createParkMock() 
-        .then((park) => {
-          parkToTest = park;
-          return superagent.get(`${apiURL}`);
-        })
-        .then((response) => {
-          console.log('GET ALL RESPONSE: ', response);
-          expect(response.status).toEqual(200);
-          expect(response.body.length).toBeTruthy();
-        });
-    });
-  });
-
   describe('DELETE /api/parks', () => {
     test('should respond with 204 if there are no errors', () => {
       let parkToTest = null; 
