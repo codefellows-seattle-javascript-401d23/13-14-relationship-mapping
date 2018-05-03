@@ -15,12 +15,12 @@ const pCreateStoreMock = () => {
   }).save();
 };
 
-describe('api/categories', () => {
+describe('api/store', () => {
   beforeAll(startServer);
   afterAll(stopServer);
   afterEach(() => Store.remove({}));
 
-  describe('POST api/categories', () => {
+  describe('POST api/store', () => {
     test('200', () => {
       const mockStore = {
         storeName: faker.lorem.words(2),
@@ -74,8 +74,25 @@ describe('api/categories', () => {
     });
   });
 
-  describe('PUT api/categories', () => {
+  describe('PUT /api/store', () => {
     test('200 for succcesful PUT', () => {
+      let storeToUpdate = null;
+      return pCreateStoreMock()
+        .then((store) => {
+          storeToUpdate = store;
+          return superagent.put(`${apiUrl}/${store._id}`)
+            .send({ storeName: 'I HAVE A NEW STORE NAME' });
+        })
+        .then((response) => {
+          expect(response.status).toEqual(200);
+          expect(response.body.storeName).toEqual('I HAVE A NEW STORE NAME');
+          expect(response.body.storeLocation).toEqual(storeToUpdate.storeLocation);
+          expect(response.body.storeTelephone).toEqual(storeToUpdate.storeTelephone);
+          expect(response.body._id).toEqual(storeToUpdate._id.toString());
+        });
+    });
+
+    test('404 for failed PUT', () => {
       let storeToUpdate = null;
       return pCreateStoreMock()
         .then((store) => {
@@ -93,7 +110,7 @@ describe('api/categories', () => {
     });
   });
 
-  describe('GET /api/categories', () => {
+  describe('GET /api/store', () => {
     test('GET request receives a 200 status code', () => {
       let tempStore = null;
       return pCreateStoreMock()
@@ -116,7 +133,7 @@ describe('api/categories', () => {
     });
   });
 
-  describe('DELETE /api/categories', () => {
+  describe('DELETE /api/store', () => {
     test('204', () => {
       return pCreateStoreMock()
         .then((store) => {
