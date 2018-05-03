@@ -22,6 +22,9 @@ const citySchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId, ref: 'restaurant',
     },
   ],
+}, { // This brace is closing the Schema definition. Not having this will cause problems updating
+  // more than one restaurant at a time quickly.
+  usePushEach: true,
 });
 
 export default mongoose.model('city', citySchema);
