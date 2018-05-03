@@ -22,52 +22,54 @@ describe('VALID request to the API', () => {
     beforeAll(startServer);
     afterAll(stopServer);
     afterEach(() => Country.remove({}));
-    test('POST - It should respond with a 200 status', () => {
-      const countryToPost = {
-        name: faker.lorem.words(10),
-        continent: faker.lorem.words(2),
-        info: faker.lorem.words(7),
-        population: faker.lorem.words(5),
-      };
-      return superagent.post(apiURL)
-        .send(countryToPost)
-        .then((response) => {
-          expect(response.status).toEqual(200);
-          expect(response.body.name).toEqual(countryToPost.name);
-          expect(response.body.population).toEqual(countryToPost.population);
-          expect(response.body._id).toBeTruthy();
-        });
-    });
-    test('POST - It should respond with a 400 status', () => {
-      const countryToPost = {
-        population: faker.lorem.words(50),
-      };
-      return superagent.post(apiURL)
-        .send(countryToPost)
-        .then(Promise.reject)
-        .catch((error) => {
-          expect(error.status).toEqual(400);
-        });
-    });
-    test('POST - It should respond with a 409 status', () => {
-      return createCountryMock()
-        .then((country) => {
-          const countryToPost = {
-            name: country.name,
-            continent: faker.lorem.words(2),
-            info: faker.lorem.words(7),
-            population: faker.lorem.words(5),
-          };
-          return superagent.post(apiURL)
-            .send(countryToPost)
-            .then(Promise.reject)
-            .catch((error) => {
-              expect(error.status).toEqual(409);
-            });
-        });
+    describe('POST /api/v1/country', () => {
+      test('POST - 200 for successful resource creation', () => {
+        const countryToPost = {
+          name: faker.lorem.words(10),
+          continent: faker.lorem.words(2),
+          info: faker.lorem.words(7),
+          population: faker.lorem.words(5),
+        };
+        return superagent.post(apiURL)
+          .send(countryToPost)
+          .then((response) => {
+            expect(response.status).toEqual(200);
+            expect(response.body.name).toEqual(countryToPost.name);
+            expect(response.body.population).toEqual(countryToPost.population);
+            expect(response.body._id).toBeTruthy();
+          });
+      });
+      test('POST - 400 for bad request', () => {
+        const countryToPost = {
+          population: faker.lorem.words(50),
+        };
+        return superagent.post(apiURL)
+          .send(countryToPost)
+          .then(Promise.reject)
+          .catch((error) => {
+            expect(error.status).toEqual(400);
+          });
+      });
+      test('POST - 409 for duplicate key', () => {
+        return createCountryMock()
+          .then((country) => {
+            const countryToPost = {
+              name: country.name,
+              continent: faker.lorem.words(2),
+              info: faker.lorem.words(7),
+              population: faker.lorem.words(5),
+            };
+            return superagent.post(apiURL)
+              .send(countryToPost)
+              .then(Promise.reject)
+              .catch((error) => {
+                expect(error.status).toEqual(409);
+              });
+          });
+      });
     });
     describe('PUT /api/v1/country', () => {
-      test('200 for successful PUT', () => {
+      test('PUT - 200 for successful update', () => {
         let countryToUpdate = null;
         return createCountryMock()
           .then((country) => {
@@ -83,8 +85,8 @@ describe('VALID request to the API', () => {
             expect(response.body._id).toEqual(countryToUpdate._id.toString());
           });
       });
-      test('should respond with 404 if there is no country found', () => {
-        return superagent.put(`${apiURL}/ABunchOfNonsense`)
+      test('PUT - 404 for id not found', () => {
+        return superagent.put(`${apiURL}/ThisIsABadID`)
           .then(Promise.reject)
           .catch((error) => {
             expect(error.status).toEqual(404);
@@ -102,7 +104,7 @@ describe('VALID request to the API', () => {
       });
     });
     describe('GET /api/v1/country', () => {
-      test('should respond with 200 if there are no errors', () => {
+      test('GET - 200 for successful retrieval by resource id', () => {
         let countryToTest = null;
         return createCountryMock()
           .then((country) => {
@@ -117,8 +119,8 @@ describe('VALID request to the API', () => {
             expect(response.body.info).toEqual(countryToTest.info);
           });
       });
-      test('should respond with 404 if there is no country found', () => {
-        return superagent.get(`${apiURL}/ABunchOfNonsense`)
+      test('GET - 404 for id not found', () => {
+        return superagent.get(`${apiURL}/ThisIsABadID`)
           .then(Promise.reject)
           .catch((error) => {
             expect(error.status).toEqual(404);
@@ -126,14 +128,14 @@ describe('VALID request to the API', () => {
       });
     });
     describe('DELETE /api/v1/country', () => {
-      test('should respond with 404 status if id is invalid', () => {
+      test('DELETE - 404 for id not found', () => {
         return superagent.delete(`${apiURL}/ThisIsABadID`)
           .then(Promise.reject)
           .catch((error) => {
             expect(error.status).toEqual(404);
           });
       });
-      test('should respond with 204 status', () => {
+      test('DELETE - 204 for successful deletion', () => {
         return createCountryMock()
           .then((country) => {
             return superagent.delete(`${apiURL}/${country._id}`);
