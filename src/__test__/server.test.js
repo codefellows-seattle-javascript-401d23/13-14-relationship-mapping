@@ -57,7 +57,6 @@ describe('/api/food', () => {
           return superagent.post(apiURL)
             .send(mockFood);
         })
-        // .then(Promise.reject)
         .catch((error) => {
           expect(error.status).toEqual(409);
         });
@@ -123,8 +122,6 @@ describe('/api/food', () => {
         .then(() => {
           return superagent.put(`${apiURL}/badId`)
             .send({ name: 'new food name' })
-            
-            .then(Promise.reject)
             .catch((error) => {
               expect(error.status).toEqual(404);
             });
