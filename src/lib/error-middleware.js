@@ -37,5 +37,3 @@ export default (error, request, response, next) => {
   logger.log(logger.ERROR, error);
   return response.sendStatus(500);
 };
-
-.
