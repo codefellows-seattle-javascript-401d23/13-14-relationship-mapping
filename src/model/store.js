@@ -28,5 +28,3 @@ const storeSchema = mongoose.Schema({
 });
 
 export default mongoose.model('store', storeSchema);
-
-.
