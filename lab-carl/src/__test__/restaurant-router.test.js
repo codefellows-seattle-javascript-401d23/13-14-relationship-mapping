@@ -28,6 +28,10 @@ describe('/api/restaurants', () => {
             .send(restaurantToPost)
             .then((response) => {
               expect(response.status).toEqual(200);
+              expect(response.body.name).toEqual(restaurantToPost.name);
+              expect(response.body.cuisine).toEqual(restaurantToPost.cuisine);
+              expect(response.body.neighborhood).toEqual(restaurantToPost.neighborhood);
+              expect(response.body.city).toEqual(restaurantToPost.city.toString());
             });
         });
     });
