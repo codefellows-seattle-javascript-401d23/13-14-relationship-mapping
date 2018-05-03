@@ -14,7 +14,7 @@ app.use(loggerMiddleware); // logger middleware at the app-level
 
 app.use(cityRoutes); // express handling our routes
 
-app.all('*', (request, response) => { // express catching all routes that are not in restaurantRoutes
+app.all('*', (request, response) => {
   logger.log(logger.INFO, 'Returning a 404 from the catch/all default route');
   return response.sendStatus(404);
 });

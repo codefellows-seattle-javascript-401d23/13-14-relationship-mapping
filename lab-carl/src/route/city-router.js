@@ -18,7 +18,7 @@ cityRouter.post('/api/cities', jsonParser, (request, response, next) => {
 
   return new City(request.body).save()
     .then((city) => {
-      logger.log(logger.INFO, 'POST - responding with a 200 status code');
+      logger.log(logger.INFO, 'CITY ROUTER - POST - responding with a 200 status code');
       return response.json(city);
     })
     .catch(next);
@@ -38,5 +38,30 @@ cityRouter.put('/api/cities/:id', jsonParser, (request, response, next) => {
     .catch(next);
 });
 
+cityRouter.get('/api/cities/:id', (request, response, next) => {
+  return City.findById(request.params.id)
+    .then((city) => {
+      if (!city) {
+        logger.log(logger.INFO, 'CITY ROUTER - GET - responding with a 404 status code (!city)');
+        return next(new HttpErrors(404));
+      }
+      logger.log(logger.INFO, 'CITY ROUTER - GET - responding with a 200 status code');
+      return response.json(city);
+    })
+    .catch(next);
+});
+
+cityRouter.delete('/api/cities/:id', (request, response, next) => {
+  return City.findByIdAndRemove(request.params.id)
+    .then((city) => {
+      if (!city) {
+        logger.log(logger.INFO, 'CITY ROUTER - DELETE - responding with a 404 status code (!city)');
+        return next(new HttpErrors(404));
+      }
+      logger.log(logger.INFO, 'CITY ROUTER - DELETE - responding with a 204 status code');
+      return response.sendStatus(204);
+    })
+    .catch(next);
+});
 
 export default cityRouter;
