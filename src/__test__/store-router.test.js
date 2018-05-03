@@ -11,7 +11,7 @@ const pCreateStoreMock = () => {
   return new Store({
     storeName: faker.lorem.words(2),
     storeLocation: faker.lorem.words(12),
-    storeTelephone: faker.lorem.words(1)
+    storeTelephone: faker.lorem.words(1),
   }).save();
 };
 
@@ -25,7 +25,7 @@ describe('api/categories', () => {
       const mockStore = {
         storeName: faker.lorem.words(2),
         storeLocation: faker.lorem.words(12),
-        storeTelephone: faker.lorem.words(1)
+        storeTelephone: faker.lorem.words(1),
       };
       return superagent.post(apiUrl)
         .send(mockStore)
@@ -41,9 +41,9 @@ describe('api/categories', () => {
       return pCreateStoreMock()
         .then((store) => {
           const mockStore = {
-            storeName: faker.lorem.words(2),
-            storeLocation: faker.lorem.words(12),
-            storeTelephone: faker.lorem.words(1)
+            storeName: store.storeName,
+            storeLocation: store.storeLocation,
+            storeTelephone: store.storeTelephone,
           };
           return superagent.post(apiUrl)
             .send(mockStore);

@@ -2,6 +2,7 @@
 
 import logger from './logger';
 
+/* eslint-disable*/    //this is for the next command on line 6.
 export default (error, request, response, next) => {
   logger.log(logger.ERROR, '__ERROR_MIDDLEWARE__');
   logger.log(logger.ERROR, error);

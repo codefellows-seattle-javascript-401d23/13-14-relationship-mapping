@@ -21,7 +21,7 @@ storeRouter.post('/api/store', jsonParser, (request, response, next) => {
 });
 
 storeRouter.put('/api/store', jsonParser, (request, response, next) => {
-  const options = {runValidators: true, new: true};
+  const options = { runValidators: true, new: true };
   return Store.findByIdAndUpdate(request.params.id, request.body, options)
     .then((updatedStore) => {
       if (!updatedStore) {
