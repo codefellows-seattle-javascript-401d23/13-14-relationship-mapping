@@ -4,13 +4,13 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import logger from './logger';
-import birdRoutes from '../route/bird-route';
+import countryRouter from '../route/country-router';
 import errorMiddleware from './error-middleware';
 
 const app = express();
 let server = null;
 
-app.use(birdRoutes);
+app.use(countryRouter);
 
 app.all('*', (request, response) => {
   logger.log(logger.INFO, 'Returning a 404 from the catch-all/default route.');

@@ -2,22 +2,22 @@
 
 import mongoose from 'mongoose';
 
-const birdSchema = mongoose.Schema({
+const countrySchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
     unique: true,
   },
-  type: {
-    type: String,
-  },
-  habitat: {
-    type: String,
-  },
-  info: {
+  continent: {
     type: String,
     required: true,
   },
+  languages: {
+    type: String,
+  },
+  foods: {
+    type: String,
+  },
 });
 
-export default mongoose.model('bird', birdSchema);
+export default mongoose.model('country', countrySchema);

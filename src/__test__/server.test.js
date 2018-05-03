@@ -2,70 +2,70 @@
 
 import faker from 'faker';
 import superagent from 'superagent';
-import Bird from '../model/bird';
+import Country from '../model/country';
 import { startServer, stopServer } from '../lib/server';
 import './lib/test.env';
 
-const apiURL = `http://localhost:${process.env.PORT}/api/v1/bird`;
+const apiURL = `http://localhost:${process.env.PORT}/api/v1/country`;
 
-const createBirdMock = () => {
-  return new Bird({
-    name: faker.lorem.words(10),
-    type: faker.lorem.words(10),
-    habitat: faker.lorem.words(25),
-    info: faker.lorem.words(25),
+const createCountryMock = () => {
+  return new Country({
+    name: faker.lorem.words(2),
+    continent: faker.lorem.words(2),
+    languages: faker.lorem.words(3),
+    foods: faker.lorem.words(10),
   }).save();
 };
 
 describe('VALID request to the API', () => {
-  describe('/api/v1/bird', () => {
+  describe('/api/v1/country', () => {
     beforeAll(startServer);
     afterAll(stopServer);
-    afterEach(() => Bird.remove({}));
+    afterEach(() => Country.remove({}));
     test('POST - It should respond with a 200 status', () => {
-      const birdToPost = {
+      const countryToPost = {
         name: faker.lorem.words(10),
-        type: faker.lorem.words(10),
-        habitat: faker.lorem.words(25),
-        info: faker.lorem.words(50),
+        continent: faker.lorem.words(2),
+        foods: faker.lorem.words(7),
+        languages: faker.lorem.words(5),
       };
       return superagent.post(apiURL)
-        .send(birdToPost)
+        .send(countryToPost)
         .then((response) => {
           expect(response.status).toEqual(200);
-          expect(response.body.name).toEqual(birdToPost.name);
-          expect(response.body.info).toEqual(birdToPost.info);
+          expect(response.body.name).toEqual(countryToPost.name);
+          expect(response.body.languages).toEqual(countryToPost.languages);
           expect(response.body._id).toBeTruthy();
         });
     });
     test('POST - It should respond with a 400 status', () => {
-      const birdToPost = {
-        info: faker.lorem.words(50),
+      const countryToPost = {
+        languages: faker.lorem.words(50),
       };
       return superagent.post(apiURL)
-        .send(birdToPost)
+        .send(countryToPost)
         .then(Promise.reject)
         .catch((response) => {
           expect(response.status).toEqual(400);
         });
     });
-    describe('GET /api/v1/bird', () => {
+    describe('GET /api/v1/country', () => {
       test('should respond with 200 if there are no errors', () => {
-        let birdToTest = null;
-        return createBirdMock()
-          .then((bird) => {
-            birdToTest = bird;
-            return superagent.get(`${apiURL}/${bird._id}`);
+        let countryToTest = null;
+        return createCountryMock()
+          .then((country) => {
+            countryToTest = country;
+            return superagent.get(`${apiURL}/${country._id}`);
           })
           .then((response) => {
             expect(response.status).toEqual(200);
-            expect(response.body.name).toEqual(birdToTest.name);
-            expect(response.body.type).toEqual(birdToTest.type);
-            expect(response.body.info).toEqual(birdToTest.info);
-            expect(response.body.habitat).toEqual(birdToTest.habitat);
+            expect(response.body.name).toEqual(countryToTest.name);
+            expect(response.body.continent).toEqual(countryToTest.continent);
+            expect(response.body.languages).toEqual(countryToTest.languages);
+            expect(response.body.foods).toEqual(countryToTest.foods);
           });
       });
-      test('should respond with 404 if there is no bird found', () => {
+      test('should respond with 404 if there is no country found', () => {
         return superagent.get(`${apiURL}/ABunchOfNonsense`)
           .then(Promise.reject)
           .catch((response) => {
@@ -73,7 +73,7 @@ describe('VALID request to the API', () => {
           });
       });
     });
-    describe('DELETE /api/v1/bird', () => {
+    describe('DELETE /api/v1/country', () => {
       test('should respond with 404 status if id is invalid', () => {
         return superagent.delete(`${apiURL}/ThisIsABadID`)
           .then(Promise.reject)
@@ -82,9 +82,9 @@ describe('VALID request to the API', () => {
           });
       });
       test('should respond with 204 status', () => {
-        return createBirdMock()
-          .then((bird) => {
-            return superagent.delete(`${apiURL}/${bird._id}`);
+        return createCountryMock()
+          .then((country) => {
+            return superagent.delete(`${apiURL}/${country._id}`);
           })
           .then((response) => {
             expect(response.status).toEqual(204);
