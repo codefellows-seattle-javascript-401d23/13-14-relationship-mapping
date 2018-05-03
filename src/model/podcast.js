@@ -15,9 +15,8 @@ const podcastSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  timestamp: {
-    type: Date,
-    default: () => new Date(),
+  parentCompany: {
+    type: String,
   },
   episodes: [
     {
