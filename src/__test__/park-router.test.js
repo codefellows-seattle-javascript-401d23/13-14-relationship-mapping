@@ -57,7 +57,6 @@ describe('/api/parks', () => {
             .send(mockPark)
             .then(Promise.reject)
             .catch((err) => {
-              console.log('POST 409 error', err);
               expect(err.status).toEqual(409);
             });
         });
@@ -108,7 +107,6 @@ describe('/api/parks', () => {
           return superagent.get(`${apiURL}`);
         })
         .then((response) => {
-          console.log('GET ALL RESPONSE: ', response);
           expect(response.status).toEqual(200);
           expect(response.body.length).toBeTruthy();
           // expect(response.body.length).toHaveLength(5);
@@ -125,13 +123,12 @@ describe('/api/parks', () => {
           return superagent
             .put(`${apiURL}/${park._id}`)
             .send({ city: 'park test test city' });
-          // you could also .then from super agent, becuase it returns a promise, no need jests system?
         })
         .then((response) => {
           expect(response.status).toEqual(200);
           expect(response.body.name).toEqual(parkToTest.name);
           expect(response.body.city).toEqual('park test test city');
-          // expect(response.body._id).toEqual(parkToTest.body._id.toString())
+          // expect(response.body._id).toEqual(parkToTest.body._id.toString()) // <--- this doesn't work for me?
         });
     });
     test('PUT - Bad Request, it should respond with a 400 status ', () => {
@@ -149,7 +146,7 @@ describe('/api/parks', () => {
             .catch((response) => {
               expect(response.status).toEqual(400);
             });
-        })
+        });
     });
     test('PUT - Invalid Endpoint, should respond with 404', () => {
       return superagent
@@ -161,10 +158,9 @@ describe('/api/parks', () => {
     });
 
     test('PUT - Should respond with 409 no duplicate name!', () => {
-
       let mockPark = null;
       return createManyParkMocks(3)
-        .then((parkArray) =>{
+        .then((parkArray) => {
           mockPark = {
             name: parkArray[0].name,
             city: 'new name longer!',
@@ -172,9 +168,8 @@ describe('/api/parks', () => {
           return superagent
             .put(`${apiURL}/${parkArray[1]._id}`)
             .send(mockPark)
-            .then(Promise.reject)// we are putting this here because we WANT an error and want to do our logic in the catch block -- so if for whatver reason we get a successful return, we want to reject it and pass it to our catch block-- just saving our selves some time
+            .then(Promise.reject)
             .catch((err) => {
-              console.log('POST 409 error', err);
               expect(err.status).toEqual(409);
             });
         });
@@ -199,19 +194,5 @@ describe('/api/parks', () => {
           expect(response.status).toEqual(404);
         });
     });
-    // test('should respond with 404 if there is no id in the query', () => {
-    //   return superagent.get(`${apiURL}/`)
-    //     .then((response) => {
-    //       expect(response.status).toEqual(404);
-    //     });
-    // }); // Sarah - test is not working, not sure why
   });
 });
-
-/* create a test that will ensure that your API returns a status code of 404 for routes that have not been registered
-create a series of tests to ensure that your /api/resource-name endpoint responds as expected. A minimum set of tests suite must contain the following tests:
-POST should test for 200, 400, and 409 (if any keys are unique)
-GET should test for 200 and 404
-
-PUT should test for 200, 400, 404, and 409 (if any keys are unique)
-DELETE should test for 204 and 404 */
