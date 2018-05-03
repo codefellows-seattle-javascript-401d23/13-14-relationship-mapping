@@ -66,6 +66,13 @@ describe('VALID request to the API', () => {
             expect(response.body._id).toEqual(countryToUpdate._id.toString());
           });
       });
+      test('should respond with 404 if there is no country found', () => {
+        return superagent.put(`${apiURL}/ABunchOfNonsense`)
+          .then(Promise.reject)
+          .catch((response) => {
+            expect(response.status).toEqual(404);
+          });
+      });
     });
     describe('GET /api/v1/country', () => {
       test('should respond with 200 if there are no errors', () => {
