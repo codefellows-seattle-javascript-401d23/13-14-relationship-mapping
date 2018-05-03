@@ -21,9 +21,15 @@ const createMockEpisodeProm = () => {
     });
 };
 
+const createManyMockEpisodesProm = (length) => {
+  return Promise.all(new Array(length)
+    .fill(0)
+    .map(() => createMockEpisodeProm()));
+};
+
 const removeMockEpisodeProm = () => Promise.all([
   Episode.remove({}),
   removePodcastMockProm(),
 ]);
 
-export { createMockEpisodeProm, removeMockEpisodeProm };
+export { createMockEpisodeProm, createManyMockEpisodesProm, removeMockEpisodeProm };

@@ -34,6 +34,16 @@ episodeRouter.put('/api/episodes/:id', jsonParser, (req, res, next) => {
     .catch(next);
 });
 
+episodeRouter.get('/api/episodes/all', (req, res, next) => {
+  logger.log(logger.INFO, 'EPISODE-ROUTER GET ALL: Processing a request');
+  return Episode.find()
+    .then((episodes) => {
+      logger.log(logger.INFO, 'EPISODE-ROUTER GET ALL: 200');
+      return res.json(episodes);
+    })
+    .catch(next);
+});
+
 episodeRouter.get('/api/episodes/:id', (req, res, next) => {
   logger.log(logger.INFO, 'EPISODE-ROUTER GET ONE: Processing a request');
   return Episode.findById(req.params.id)

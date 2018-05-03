@@ -3,7 +3,7 @@
 import faker from 'faker';
 import superagent from 'superagent';
 import { startServer, stopServer } from '../lib/server';
-import { createMockEpisodeProm, removeMockEpisodeProm } from './lib/episode-mock';
+import { createMockEpisodeProm, createManyMockEpisodesProm, removeMockEpisodeProm } from './lib/episode-mock';
 import { createMockPodcastProm } from './lib/podcast-mock';
 
 const apiUrl = `http://localhost:${process.env.PORT}/api/episodes`;
@@ -75,8 +75,27 @@ describe('/api/episodes', () => {
           expect(res.body.description).toEqual(episodeToUpdate.description);
         });
     });
+    test('400', () => {
+      return createMockEpisodeProm()
+        .then((mockObject) => {
+          return superagent.put(`${apiUrl}/${mockObject.episode._id}`)
+            .send({ title: '' });
+        })
+        .then(Promise.reject)
+        .catch((res) => {
+          expect(res.status).toEqual(400);
+        });
+    });
+    test('404', () => {
+      return superagent.put(`${apiUrl}/BADID`)
+        .send()
+        .then(Promise.reject)
+        .catch((res) => {
+          expect(res.status).toEqual(404);
+        });
+    });
   });
-  describe('GET', () => {
+  describe('GET ONE', () => {
     test('200', () => {
       let episodeToCompare = null;
       return createMockEpisodeProm()
@@ -96,6 +115,21 @@ describe('/api/episodes', () => {
         .then(Promise.reject)
         .catch((res) => {
           expect(res.status).toEqual(404);
+        });
+    });
+  });
+  describe('GET ALL', () => {
+    test('200', () => {
+      const episodesArray = [];
+      return createManyMockEpisodesProm(10)
+        .then((mockObjectArray) => {
+          mockObjectArray.forEach(object => episodesArray.push(object.episode));
+          return superagent.get(`${apiUrl}/all`);
+        })
+        .then((res) => {
+          expect(res.status).toEqual(200);
+          expect(Array.isArray(res.body)).toEqual(true);
+          expect(res.body).toHaveLength(10);
         });
     });
   });
