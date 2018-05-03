@@ -92,20 +92,11 @@ describe('api/store', () => {
         });
     });
 
-    test('404 for failed PUT', () => {
-      let storeToUpdate = null;
-      return pCreateStoreMock()
-        .then((store) => {
-          storeToUpdate = store;
-          return superagent.put(`${apiUrl}/${store._id}`)
-            .send({ storeName: 'I HAVE A NEW STORE NAME' });
-        })
-        .then((response) => {
-          expect(response.status).toEqual(200);
-          expect(response.body.storeName).toEqual('I HAVE A NEW STORE NAME');
-          expect(response.body.storeLocation).toEqual(storeToUpdate.storeLocation);
-          expect(response.body.storeTelephone).toEqual(storeToUpdate.storeTelephone);
-          expect(response.body._id).toEqual(storeToUpdate._id.toString());
+    test('PUT request receives a 404 status code for an invalid id', () => {
+      return superagent.put(`${apiUrl}/thisIsABadId`)
+        .then(Promise.reject)
+        .catch((response) => {
+          expect(response.status).toEqual(404);
         });
     });
   });
