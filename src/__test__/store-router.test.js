@@ -5,7 +5,7 @@ import superagent from 'superagent';
 import Store from '../model/store';
 import { startServer, stopServer } from '../lib/server';
 
-const apiUrl = `http://localhost:${process.env.PORT}/api/categories`;
+const apiUrl = `http://localhost:${process.env.PORT}/api/store`;
 
 const pCreateStoreMock = () => {
   return new Store({
@@ -34,6 +34,7 @@ describe('api/categories', () => {
           expect(response.body._id).toBeTruthy();
           expect(response.body.storeName).toEqual(mockStore.storeName);
           expect(response.body.storeLocation).toEqual(mockStore.storeLocation);
+          expect(response.body.storeTelephone).toEqual(mockStore.storeTelephone);
         });
     });
 
@@ -93,7 +94,7 @@ describe('api/categories', () => {
   });
 
   describe('GET /api/categories', () => {
-    test('200', () => {
+    test('GET request receives a 200 status code', () => {
       let tempStore = null;
       return pCreateStoreMock()
         .then((store) => {
@@ -103,6 +104,14 @@ describe('api/categories', () => {
               expect(response.status).toEqual(200);
               expect(response.body._id).toEqual(tempStore._id.toString());
             });
+        });
+    });
+
+    test('GET request receives a 404 status code for an invalid id', () => {
+      return superagent.get(`${apiUrl}/thisIsABadId`)
+        .then(Promise.reject)
+        .catch((response) => {
+          expect(response.status).toEqual(404);
         });
     });
   });

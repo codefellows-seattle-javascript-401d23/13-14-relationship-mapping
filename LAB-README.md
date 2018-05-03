@@ -55,11 +55,14 @@ Create the following routes for performing CRUD opperations on your resourcee
   * on failure due to a resouce with that id not existing respond with a 404 status code
 
 ## Tests
-* Write tests to ensure the `/api/resource-name` endpoint responds as described for each condition below:
-* `GET`: test 404, it should respond with 'not found' for valid requests made with an id that was not found
-* `GET`: test 200, it should contain a response body for a request made with a valid id
-* `POST`: test 400, it should respond with 'bad request' if no request body was provided or the body was invalid
-* `POST`: test 200, it should respond with the body content for a post request with a valid body
+[x]Write tests to ensure the `/api/resource-name` endpoint responds as described for each condition
+ below:
+[x] `GET`: test 404, it should respond with 'not found' for valid requests made with an id that was
+ not found
+[ ] `GET`: test 200, it should contain a response body for a request made with a valid id
+[x] `POST`: test 400, it should respond with 'bad request' if no request body was provided or the 
+  body was invalid
+[x] `POST`: test 200, it should respond with the body content for a post request with a valid body
 
 ## Documentation
-In the README.md write documention for starting your server and makeing requests to each endpoint it provides. The documentaion should describe how the server would respond to valid and invalid requests.
+In the README.md write documention for starting your server and how to make requests to each endpoint it provides. The documentaion should describe how the server would respond to valid and invalid requests.

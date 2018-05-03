@@ -32,7 +32,7 @@ DELETE /api/shoes/:id
 - the route should delete a note with the given id
 - on success this should return a 204 status code with no content in the body
 - on failure due to lack of id in the query respond with a 400 status code
-- on failure due to a resouce with that id not existing respond with a 404 status code
+- on failure due to a resource with that id not existing respond with a 404 status code
 
 ## Change Log 
 04-30-2018 4:59pm - Scaffolding was completed
@@ -40,4 +40,4 @@ DELETE /api/shoes/:id
 04-30-2018 4:59pm - Delete functionality was added.
 
 ## Credits and Collaborations
-Specail thanks to all of the Code Fellows staff and fellow 401-d23 students
+Special thanks to all of the Code Fellows staff and fellow 401-d23 students
