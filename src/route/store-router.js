@@ -60,3 +60,5 @@ storeRouter.delete('/api/store/:id', (request, response, next) => {
     });
 });
 export default storeRouter;
+
+.

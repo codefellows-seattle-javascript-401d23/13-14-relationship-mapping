@@ -1,43 +1,44 @@
-# LAB 11-12 EXPRESS
+# LAB 13 Relationship Mapping
 
 **Author**: Joshua Fredrickson
 
 **Version**: 1.0.0 
 
 ## Overview
-Lab 11-12 is a Shoe intake management application that takes api requests and posts the data into a 
-Mongo Data Base.
+Lab 13 is a Store API that accepts HTTP CRUD requests into a Mongo Data Base.
 
 
 ## Getting Started
-After installing the Lab 11-12 files, install node.js and the following dependencies: 
-body-parser, dotenv, express, faker, mongoose, winston
+To use the Lab 13 application, [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/) 
+(Node Package manager), and [Mongo DB](https://docs.mongodb.com/manual/installation/)  will need
+ to be locally installed.  Once Node.js, npm, Mongo DB have been installed, install the Lab 13 files.  
+ Prior to starting the Lab 13 application, from the command line while you are in the Lab13 file 
+ folder, enter the command `npm i`.  This will download all needed dependencies for the 
+ application to run.   
+
 
 ## Architecture
-Node.js, body-parser, dotenv, express, faker, mongoose, winston
+This application was deployed with the following technologies.
+Node.js, npm, body-parser, dotenv, express, faker, mongoose, winston, babel, superagent, 
+http-errors, jest, eslint, JavaScript
     
 SERVER ENDPOINTS 
-
-POST /api/shoes
-- pass data as stringifed JSON in the body of a POST request to create a new resource
-- on success respond with a 200 status code and the created note
-- on failure due to a bad request send a 400 status code
-
-GET /api/shoes and GET /api/shoes/:id
-- with no id in the query string it should respond with an array of all of your resources
-- with an id in the query string it should respond with the details of a specifc resource (as JSON)
-- if the id is not found respond with a 404
-
+POST /api/store
+GET /api/shoes/:id
+PUT /api/shoes/:id
 DELETE /api/shoes/:id
-- the route should delete a note with the given id
-- on success this should return a 204 status code with no content in the body
-- on failure due to lack of id in the query respond with a 400 status code
-- on failure due to a resource with that id not existing respond with a 404 status code
+
 
 ## Change Log 
-04-30-2018 4:59pm - Scaffolding was completed
-04-30-2018 8:00pm - Lab was functional and passing Test 
-04-30-2018 4:59pm - Delete functionality was added.
+05-02-2018  4:30pm  first commit, scaffolding tests not passing
+05-02-2018  9:30pm  fixing routes in store-router, and server (had a 4 hour break)
+05-02-2018  10:30pm Passing 8 tests
+05-02-2018  10:50pm Passing 9 tests
+05-02-2018  11:15pm Passing 10 tests
+05-02-2018  11:50pm Passing 11 tests
+05-03-2018  12:13pm Working on README
 
 ## Credits and Collaborations
-Special thanks to all of the Code Fellows staff and fellow 401-d23 students
+Special thanks to all of the Code Fellows staff and fellow 401-d23 students.
+
+.
