@@ -13,6 +13,11 @@ const foodSchema = mongoose.Schema({
     required: true,
     minlength: 10,
   },
+  difficulty: {
+    type: Number,
+    unique: true,
+    maxValue: 5,
+  },
   timestamp: {
     type: Date,
     default: () => new Date(),
