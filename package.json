@@ -1,25 +1,25 @@
 {
-  "name": "11-12-express",
+  "name": "13-14-relationship-mapping",
   "version": "1.0.0",
-  "description": "![cf](https://i.imgur.com/7v5ASc8.png) 11: Single Resource Express API ======",
+  "description": "![CF](https://camo.githubusercontent.com/70edab54bba80edb7493cad3135e9606781cbb6b/687474703a2f2f692e696d6775722e636f6d2f377635415363382e706e67) 13: Single Resource Mongo and Express API ===",
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "jest  --coverage --forceExit --runInBand",
+    "test": "jest  --forceExit --runInBand",
     "dbon": "mkdir -p ./db && mongod --dbpath ./db",
     "dboff": "killall mongod"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jenwill/11-12-express.git"
+    "url": "git+https://github.com/jenwill/13-14-relationship-mapping.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jenwill/11-12-express/issues"
+    "url": "https://github.com/jenwill/13-14-relationship-mapping/issues"
   },
-  "homepage": "https://github.com/jenwill/11-12-express#readme",
+  "homepage": "https://github.com/jenwill/13-14-relationship-mapping#readme",
   "devDependencies": {
     "babel": "^6.23.0",
     "babel-eslint": "^8.2.3",
