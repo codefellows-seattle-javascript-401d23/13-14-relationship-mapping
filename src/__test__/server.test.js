@@ -17,6 +17,12 @@ const createCountryMock = () => {
   }).save();
 };
 
+const createManyCountryMocks = (howMany) => {
+  return Promise.all(new Array(howMany)
+    .fill(0)
+    .map(() => createCountryMock()));
+};
+
 describe('VALID request to the API', () => {
   describe('/api/v1/country', () => {
     beforeAll(startServer);
@@ -100,6 +106,17 @@ describe('VALID request to the API', () => {
           })
           .catch((error) => {
             expect(error.status).toEqual(400);
+          });
+      });
+      test('PUT - 409 for duplicate key', () => {
+        return createManyCountryMocks(2)
+          .then((countriesArray) => {
+            return superagent.put(`${apiURL}/${countriesArray[0]._id}`)
+              .send({ name: countriesArray[1].name });
+          })
+          .then(Promise.reject)
+          .catch((error) => {
+            expect(error.status).toEqual(409);
           });
       });
     });
