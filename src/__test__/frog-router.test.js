@@ -16,11 +16,11 @@ describe('api/frogs', () => {
 
   describe('POST api/frogs', () => {
     test('200 status code in creation', () => {
-      return pCreateFrogMock()
-        .then((frogMock) => {
+      return pCreateRegionMock()
+        .then((regionMock) => {
           const frogToPost = {
-            species: faker.lorem.words(10);
-            region: frogMock._id;
+            species: faker.lorem.words(10),
+            region: regionMock._id,
           };
 
           return superagent.post(apiUrl)
@@ -29,8 +29,8 @@ describe('api/frogs', () => {
               expect(response.status).toEqual(200);
             });
         });
-      });
     });
+  });
 
   describe('PUT api/frogs/', () => {
     test('200 status code in creation PUT', () => {
@@ -38,7 +38,7 @@ describe('api/frogs', () => {
       return pCreateFrogMock()
         .then((mock) => {
           frogToUpdate = mock.frog;
-          return superagent.put(`${apiUrl}/${frog._id}`)
+          return superagent.put(`${apiUrl}/${mock.frog._id}`)
             .send({ species: 'poisonous tree frog' });
         })
         .then((response) => {
@@ -49,5 +49,4 @@ describe('api/frogs', () => {
     });
   });
 });
-
 

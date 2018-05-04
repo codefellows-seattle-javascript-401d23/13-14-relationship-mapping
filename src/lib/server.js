@@ -4,12 +4,14 @@ import express from 'express';
 import mongoose from 'mongoose';
 import logger from './logger';
 import regionRoutes from '../route/region-router';
+import frogRoutes from '../route/frog-router';
 import errorMiddleware from './error-middleware';
 
 const app = express();
 let server = null;
 
 app.use(regionRoutes);
+app.use(frogRoutes);
 
 app.all('*', (request, response) => {
   logger.log(logger.INFO, 'SERVER: Returning a 404 from the catch-all/default route');

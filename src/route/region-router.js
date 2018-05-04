@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
 import HttpErrors from 'http-errors';
-import Region from '../model/region';
+import Region from '../model/region-model';
 import logger from '../lib/logger';
 
 const jsonParser = bodyParser.json();
@@ -24,8 +24,8 @@ regionRouter.get('/api/regions/:id', (request, response, next) => {
   return Region.findById(request.params.id)
     .then((region) => {
       if (!region) {
-        logger.log(logger.INFO, 'GET - responding with a 404 status code - (!idea)');
-        return next(new HttpErrors(404, 'idea not found'));
+        logger.log(logger.INFO, 'GET - responding with a 404 status code - (!region)');
+        return next(new HttpErrors(404, 'region not found'));
       }
       logger.log(logger.INFO, 'GET - responding with a 200 status code');
       return response.json(region);
@@ -35,7 +35,6 @@ regionRouter.get('/api/regions/:id', (request, response, next) => {
 
 regionRouter.put('/api/regions/:id', jsonParser, (request, response, next) => {
   const option = { runValidators: true, new: true };
-  console.log(request, ' tracking put');
   return Region.findByIdAndUpdate(request.params.id, request.body, option)
     .then((updatedRegion) => {
       if (!updatedRegion) {
