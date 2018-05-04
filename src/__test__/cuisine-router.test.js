@@ -22,11 +22,29 @@ describe('/api/cuisine', () => {
             countryOfOrigin: faker.lorem.words(3),
             food: foodMock._id,
           };
-
           return superagent.post(apiURL)
             .send(cuisineToPost)
             .then((response) => {
               expect(response.status).toEqual(200);
+              expect(response.body.name).toEqual(cuisineToPost.name);
+              expect(response.body.countryOfOrigin).toEqual(cuisineToPost.countryOfOrigin);
+              expect(response.body._id).toBeTruthy();
+            });
+        });
+    });
+
+    test('POST 400', () => {
+      return createFoodMock()
+        .then((foodMock) => {
+          const cuisineToPost = {
+            countryOfOrigin: faker.lorem.words(3),
+            food: foodMock._id,
+          };
+          return superagent.post(apiURL)
+            .send(cuisineToPost)
+            .then(Promise.reject)
+            .catch((response) => {
+              expect(response.status).toEqual(400);
             });
         });
     });
