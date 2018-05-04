@@ -2,7 +2,7 @@
 
 import faker from 'faker';
 import superagent from 'superagent';
-import Region from '../model/region';
+import Region from '../model/region-model';
 import { startServer, stopServer } from '../lib/server';
 
 const apiUrl = `http://localhost:${process.env.PORT}/api/regions`;
@@ -70,7 +70,7 @@ describe('api/regions', () => {
   });
 
   describe('PUT api/region/:id', () => {
-    test('200 for succcesful PUT', () => {
+    test('200 for succesful PUT', () => {
       let regionToUpdate = null;
       return pCreateRegionMock()
         .then((region) => {
