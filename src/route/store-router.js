@@ -24,8 +24,7 @@ storeRouter.put('/api/store/:id', jsonParser, (request, response, next) => {
   return Store.findByIdAndUpdate(request.params.id, request.body, options)
     .then((updatedStore) => {
       if (!updatedStore) {
-        logger.log(logger.ERROR, 'STORE-ROUTER - PUT - responding with 404 status code ! updated' +
-            ' store');
+        logger.log(logger.ERROR, 'STORE-ROUTER - PUT - responding with 404 status code ! updated');
         return next(new HttpErrors(404, 'category not found'));
       }
       logger.log(logger.INFO, 'GET - responding with 200 status code');
@@ -54,6 +53,7 @@ storeRouter.delete('/api/store/:id', (request, response, next) => {
         logger.log(logger.ERROR, 'STORE ROUTER - DELETE - responding with 404');
         return next(new HttpErrors(404, 'category not found'));
       }
+
       logger.log(logger.INFO, 'STORE ROUTER - GET - responding with 204 status code');
       return response.sendStatus(204);
     });

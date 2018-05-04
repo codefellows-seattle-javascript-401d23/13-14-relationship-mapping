@@ -13,7 +13,6 @@ const partSchema = mongoose.Schema({
   partNumber: {
     type: String,
     required: true,
-
   },
   QoH: {
     type: Number,
