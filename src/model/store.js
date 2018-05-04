@@ -20,7 +20,7 @@ const storeSchema = mongoose.Schema({
     type: Date,
     default: () => new Date(),
   },
-  parts: [
+  part: [
     {
       type: mongoose.Schema.Types.ObjectId, ref: 'part',
     },
