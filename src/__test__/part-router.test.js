@@ -27,6 +27,8 @@ describe('/api/parts', () => {
             .send(partToPost)
             .then((response) => {
               expect(response.status).toEqual(200);
+              expect(response.body.storeName).toEqual(storeMock.storeName);
+              expect(response.body.storeTelephone).toEqual(storeMock.storeTelephone);
             });
         });
     });

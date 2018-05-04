@@ -2,13 +2,14 @@
 
 import faker from 'faker';
 import Part from '../../model/part-model';
-import { pCreateStoreMock, pRemoveStoreMock} from "./store-mock";
+import * as storeMock from './store-mock'
+// import { pCreateStoreMock, pRemoveStoreMock} from './store-mock';
 
 const pCreatePartMock = () => {
   const resultMock = {};
 
-  return storeMock.pCreateStoreMock() // Vinicio - creating a category
-      .then((createdStore) => {
+  return storeMock.pCreateStoreMock()
+    .then((createdStore) => {
       resultMock.store = createdStore;
 
       return new Part({
