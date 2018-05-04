@@ -35,18 +35,24 @@ describe('api/categories', () => {
         });
     });
 
-    test('409 due to duplicate videoconsole', () => {
+    test.only('409 due to duplicate videoconsole', () => {
       return pCreateCategoryMock()
         .then((category) => {
+          console.log(category);
           const mockCategory = {
             videoconsole: category.videoconsole,
             videogame: category.videogame,
+            _id: category._id,
           };
           return superagent.post(apiUrl)
             .send(mockCategory);
         })
-        .then(Promise.reject)
+        .then(() => {
+          console.log('SOMETHING KOJWLKEJRKLEJRE');
+          Promise.reject();
+        })
         .catch((err) => {
+          console.log('SOMETHING SHOULD HAPPENSLKDJF:KSJFKJS:F', err);
           expect(err.status).toEqual(409);
         });
     });

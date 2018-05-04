@@ -12,13 +12,17 @@ const jsonParser = bodyParser.json();
 const categoryRouter = new Router();
 
 categoryRouter.post('/api/categories', jsonParser, (request, response, next) => {
+  console.log('BEGINNING OFPOOOOOOSSST');
   if (!request.body.videoconsole) {
     logger.log(logger.ERROR, 'CATEGORY-ROUTER: Responding with 400 error code');
     return next(new HttpErrors(400, 'Category videoconsole is required'));
   }
-
+console.log('MIDDLE OF POST');
   return new Category(request.body).save()
-    .then(category => response.json(category))
+    .then((category) => {
+      console.log('DID YOU HIT THE .THEN?');
+      return response.json(category);
+    })
     .catch(next);
 });
 
