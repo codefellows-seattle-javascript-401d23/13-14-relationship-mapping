@@ -9,7 +9,7 @@ import logger from '../lib/logger';
 
 const jsonParser = bodyParser.json();
 
-const parkRouter = new Router(); // our parent router now!
+const parkRouter = new Router();
 
 parkRouter.post('/api/parks', jsonParser, (request, response, next) => {
   logger.log(logger.INFO, 'PARK POST - processing a request');
