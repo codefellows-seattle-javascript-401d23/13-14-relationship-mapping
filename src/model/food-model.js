@@ -16,13 +16,14 @@ const foodSchema = mongoose.Schema({
   difficulty: {
     type: Number,
     unique: true,
+    minValue: 0,
     maxValue: 5,
   },
   timestamp: {
     type: Date,
     default: () => new Date(),
   },
-  cuisines: [
+  cuisine: [
     {
       type: mongoose.Schema.Types.ObjectId, ref: 'cuisine',
     },
