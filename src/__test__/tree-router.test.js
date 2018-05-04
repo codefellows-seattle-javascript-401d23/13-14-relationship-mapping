@@ -1,4 +1,5 @@
 'use strict';
+
 // LAB 14 NOTES
 import faker from 'faker';
 import superagent from 'superagent';
@@ -16,19 +17,15 @@ describe('api/trees', () => {
   beforeAll(startServer);
   afterAll(stopServer);
   afterEach(pRemoveTreeMock);
-  // afterEach(pRemoveParkMock);
 
   describe('POST /api/trees', () => {
-    // need to create a real tree, need first the Park
-    test('200 status code in creation', () => {
-      // first need make Parent
+    test('200 status code in POST', () => {
       return pCreateParkMock()
         .then((parkMock) => {
-          console.log('in parkMock then block!');
           const treeToPost = {
             type: faker.lorem.words(10),
             genus: faker.lorem.words(10),
-            park: parkMock._id, // if this is not in DB, we wont be able to make a new tree via mongoose's own validation?
+            park: parkMock._id,
           };
           return superagent
             .post(apiURL)
@@ -38,48 +35,43 @@ describe('api/trees', () => {
             });
         });
     });
-    // test('400 status code in creation', () => {
-    //   // first need make Parent
-    //   return pCreateParkMock()
-    //     .then((parkMock) => {
-    //       console.log('in parkMock then block!');
-    //       const treeToPost = {
-    //         type: '',
-    //         genus: faker.lorem.words(10),
-    //         park: parkMock._id, // if this is not in DB, we wont be able to make a new tree via mongoose's own validation?
-    //       };
-    //       return superagent
-    //         .post(apiURL)
-    //         .send(treeToPost)
-    //         .then(Promise.reject)
-    //         .catch((err) => {
-    //           expect(err.status).toEqual(400);
-    //         });
-    //     });
-    // });
-    // test('409 status code in creation', () => {
-    //   // first need make Parent
-    //   // let testTree = null;
-    //   return pCreateParkMock()
-    //     .then((parkMock) => {
-    //       console.log('in parkMock then block!');
-    //       pCreateTreeMock()
-    //         .then((treeMock) => {
-    //           const treeToPost = {
-    //             type: treeMock.type,
-    //             genus: faker.lorem.words(10),
-    //             park: parkMock._id, // if this is not in DB, we wont be able to make a new tree via mongoose's own validation?
-    //           };
-    //           return superagent
-    //             .post(apiURL)
-    //             .send(treeToPost)
-    //             .then(Promise.reject)
-    //             .catch((err) => {
-    //               expect(err.status).toEqual(409);
-    //             });
-    //         });
-    //     });
-    // });
+    test('400 status code in POST', () => {
+      return pCreateParkMock()
+        .then((parkMock) => {
+          const treeToPost = {
+            type: '',
+            genus: faker.lorem.words(10),
+            park: parkMock._id,
+          };
+          return superagent
+            .post(apiURL)
+            .send(treeToPost)
+            .then(Promise.reject)
+            .catch((err) => {
+              expect(err.status).toEqual(400);
+            });
+        });
+    });
+    test('409 status code in POST', () => {
+      return pCreateParkMock()
+        .then((parkMock) => {
+          pCreateTreeMock()
+            .then((treeMock) => {
+              const treeToPost = {
+                type: treeMock.type,
+                genus: faker.lorem.words(10),
+                park: parkMock._id, 
+              };
+              return superagent
+                .post(apiURL)
+                .send(treeToPost)
+                .then(Promise.reject)
+                .catch((err) => {
+                  expect(err.status).toEqual(409);
+                });
+            });
+        });
+    });
   });
   describe('PUT /api/trees', () => {
     test('200 status code in PUT', () => {
@@ -98,34 +90,38 @@ describe('api/trees', () => {
         });  
     });
     test('400 status code in PUT', () => {
-      let treeToUpdate = null;
       return pCreateTreeMock()
         .then((mock) => {
-          treeToUpdate = mock;
           return superagent
             .put(`${apiURL}/${mock._id}`)
-            .send({ type: 'testing the tree type' });
+            .send({ type: '' });
         })
-        .then((response) => {
-          expect(response.status).toEqual(200);
-          expect(response.body.type).toEqual('testing the tree type');
-          expect(response.body.genus).toEqual(treeToUpdate.genus);
+        .then(Promise.reject)
+        .catch((err) => {
+          expect(err.status).toEqual(400);
         });  
     });
     test('409 status code in PUT', () => {
-      let treeToUpdate = null;
+      let treeOne = null;
+      let treeTwo = null;
       return pCreateTreeMock()
         .then((mock) => {
-          treeToUpdate = mock;
-          return superagent
-            .put(`${apiURL}/${mock._id}`)
-            .send({ type: 'testing the tree type' });
-        })
-        .then((response) => {
-          expect(response.status).toEqual(200);
-          expect(response.body.type).toEqual('testing the tree type');
-          expect(response.body.genus).toEqual(treeToUpdate.genus);
-        });  
+          treeOne = mock;
+          return pCreateTreeMock()
+            .then((secondMock) => {
+              treeTwo = secondMock;
+              return superagent
+                .put(`${apiURL}/${treeTwo._id}`)
+                .send({ 
+                  type: treeOne.type,
+                  genus: 'testing this one',
+                });
+            })
+            .then(Promise.reject)
+            .catch((err) => {
+              expect(err.status).toEqual(409);
+            }); 
+        });
     });
   });
   describe('GET /api/trees', () => {
@@ -133,7 +129,6 @@ describe('api/trees', () => {
       let treeID = null;
       return pCreateTreeMock()
         .then((mock) => {
-          console.log('whats mock: ', mock);
           treeID = mock._id;
           return superagent.get(`${apiURL}/${mock._id}`);
         })
@@ -167,7 +162,7 @@ describe('api/trees', () => {
   //       expect(response.body.type).toEqual('testing the tree type');
   //       expect(response.body.genus).toEqual(treeToUpdate.genus);
   //     })  
-  // })
+  // });
   describe('DELETE /api/trees', () => {
     test('204 status code in DELETE', () => {
       let treeToDelete = null;
@@ -194,6 +189,3 @@ describe('api/trees', () => {
     });
   });
 });
-
-
-// big goal -- 1. what do i need to mock, mock as much as possible so when testing only testing the ROUTE not the DB 2. what do i need to post?
