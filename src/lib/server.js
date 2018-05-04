@@ -10,8 +10,7 @@ import errorMiddleWare from './error-middleware';
 
 const app = express();
 let server = null;
-//---------------------------
-// 404 should be last because these are read in order:
+
 app.use(parkRoutes);
 app.use(treeRoutes);
 app.all('*', (request, response) => {
@@ -30,11 +29,10 @@ const startServer = () => {
     })
     .catch((err) => {
       logger.log(logger.ERROR, `something happened in server, ${JSON.stringify(err)}`);
-    }); // you could chain a .catch here for any errors, judy says unlikely, but if want to be robust can
+    });
 };
 
 const stopServer = () => {
-  // mongoose.diconnect returns a promise, so needs a .then
   return mongoose.disconnect()
     .then(() => {
       server.close(() => {

@@ -1,7 +1,5 @@
 'use strict';
 
-// pro tip could rename file so can see in each file that this is a model/schema
-
 import mongoose from 'mongoose'; 
 
 const parkSchema = mongoose.Schema(
@@ -30,16 +28,15 @@ const parkSchema = mongoose.Schema(
       type: Date,
       default: () => new Date(),
     },
-    trees: [ // these brakets say hey make this property an array!
+    trees: [
       {
-        type: mongoose.Schema.Types.ObjectId, ref: 'tree', // many model name as exported
+        type: mongoose.Schema.Types.ObjectId, ref: 'tree', 
       },
     ],
-  }, // closing schema
+  }, 
   {
-  // must tell mongoose how to save your cards array
-    usePushEach: true, // says hey if want to update many, dont do it all at once, do it one by one-- must include this!
+    usePushEach: true,
   },
 );
 
-export default mongoose.model('park', parkSchema);// Sarah - litle confused about what and why here
+export default mongoose.model('park', parkSchema);

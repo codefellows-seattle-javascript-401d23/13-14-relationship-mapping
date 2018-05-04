@@ -7,9 +7,8 @@ import superagent from 'superagent';
 
 // import Park from '../model/park';
 import { startServer, stopServer } from '../lib/server';
-import { pCreateParkMock, pRemoveParkMock } from './park-mock';
-import { pRemoveTreeMock, pCreateTreeMock } from './tree-mock';
-import tree from '../model/tree';
+import { pCreateParkMock } from './park-mock';
+import { pRemoveTreeMock, pCreateTreeMock, pCreateManyTreeMocks } from './tree-mock';
 
 const apiURL = `http://localhost:${process.env.PORT}/api/trees`;
 
@@ -148,27 +147,26 @@ describe('api/trees', () => {
         });
     });
   });
-  // describe('GET ALL /api/trees', () => {
-  //   let treeToUpdate = null;
-  //   return pCreateTreeMock()
-  //     .then((mock) => {
-  //       treeToUpdate = mock.tree;
-  //       return superagent
-  //         .put(`${apiURL}/${mock.tree._id}`)
-  //         .send({type: 'testing the tree type'});
-  //     })
-  //     .then((response) => {
-  //       expect(response.status).toEqual(200);
-  //       expect(response.body.type).toEqual('testing the tree type');
-  //       expect(response.body.genus).toEqual(treeToUpdate.genus);
-  //     })  
-  // });
+  describe('GET ALL /api/trees', () => {
+    test('should respond with 200 if there are no errors', () => {
+      let treeToTest = null;
+      return pCreateManyTreeMocks(5) 
+        .then((treeArray) => {
+          treeToTest = treeArray[0]; // how do I use array desctructuring?
+          return superagent.get(`${apiURL}`);
+        })
+        .then((response) => {
+          expect(response.status).toEqual(200);
+          expect(response.body.length).toBeTruthy();
+          // expect(response.body.length).toHaveLength(5);
+          // expect(response.body).toContain(treeToTest._id);
+        });
+    });
+  });
   describe('DELETE /api/trees', () => {
     test('204 status code in DELETE', () => {
-      let treeToDelete = null;
       return pCreateTreeMock()
         .then((mock) => {
-          treeToDelete = mock;
           return superagent.delete(`${apiURL}/${mock._id}`);
         })
         .then((response) => {
@@ -176,10 +174,8 @@ describe('api/trees', () => {
         });
     });
     test('404 status code in DELETE', () => {
-      let treeToDelete = null;
       return pCreateTreeMock()
         .then((mock) => {
-          treeToDelete = mock;
           return superagent.delete(`${apiURL}/INVALID`);
         })
         .then(Promise.reject)
