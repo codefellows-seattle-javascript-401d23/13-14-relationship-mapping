@@ -2,23 +2,16 @@
 
 import faker from 'faker';
 import superagent from 'superagent';
-import Food from '../model/food';
+// import Food from '../model/food-model';
 import { startServer, stopServer } from '../lib/server';
+import { createFoodMock, removeFoodMock } from './lib/food-mock';
 
 const apiURL = `http://localhost:${process.env.PORT}/api/food`;
-
-const createFoodMock = () => {
-  return new Food({
-    name: faker.lorem.words(2),
-    recipe: faker.lorem.words(15),
-  }).save();
-};
-let mockId = null;
 
 describe('/api/food', () => {
   beforeAll(startServer);
   afterAll(stopServer);
-  afterEach(() => Food.remove({}));
+  afterEach(removeFoodMock);
   describe('POST /api/food', () => {
     test('POST - Should respond with 200 status', () => {
       const foodToPost = {
@@ -33,7 +26,6 @@ describe('/api/food', () => {
           expect(response.body.recipe).toEqual(foodToPost.recipe);
           expect(response.body.timestamp).toBeTruthy();
           expect(response.body._id).toBeTruthy();
-          mockId = response.body._id;
         });
     });
     test('POST - Should respond with 400 status', () => {
@@ -140,7 +132,10 @@ describe('/api/food', () => {
   });
   describe('DELETE /api/food', () => {
     test('should respond with 204 if no errors', () => {
-      return superagent.del(`${apiURL}/${mockId}`)
+      return createFoodMock()
+        .then((food) => {
+          return superagent.del(`${apiURL}/${food._id}`);
+        })
         .then((response) => {
           expect(response.status).toEqual(204);
           expect(response.body).toEqual({});

@@ -23,6 +23,11 @@ const cuisineSchema = mongoose.Schema({
     minValue: 0,
     maxValue: 5,
   },
+  food: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'food',
+  },
 });
 
 function cuisinePreHook(done) {
@@ -31,7 +36,7 @@ function cuisinePreHook(done) {
       if (!foodFound) {
         throw new HttpError(404, 'food not found');
       }
-      foodFound.push(this._id);
+      foodFound.cuisine.push(this._id);
       return foodFound.save();
     })
     .then(() => done())

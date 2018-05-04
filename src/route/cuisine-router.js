@@ -18,6 +18,15 @@ cuisineRouter.post('/api/cuisine', jsonParser, (request, response, next) => {
     .catch(next);
 });
 
+cuisineRouter.get('/api/cuisine/:id', (request, response, next) => {
+  return Cuisine.findById(request.params.id)
+    .then((cuisine) => {
+      logger.log(logger.INFO, 'CUISINE ROUTER: GET - Responding with 200');
+      return response.json(cuisine);
+    })
+    .catch(next);
+});
+
 cuisineRouter.put('/api/cuisine/:id', jsonParser, (request, response, next) => {
   const options = { runValidators: true, new: true };
   
@@ -29,6 +38,15 @@ cuisineRouter.put('/api/cuisine/:id', jsonParser, (request, response, next) => {
       }
       logger.log(logger.INFO, 'CUISINE ROUTER: PUT - responding with 200');
       return response.json(updatedCuisine);
+    })
+    .catch(next);
+});
+
+cuisineRouter.delete('/api/cuisine/:id', (request, response, next) => {
+  return Cuisine.findByIdAndRemove(request.params.id)
+    .then(() => {
+      logger.log(logger.INFO, 'CUISINE-ROUTER: DELETE - Responding with 204');
+      return response.sendStatus(204);
     })
     .catch(next);
 });

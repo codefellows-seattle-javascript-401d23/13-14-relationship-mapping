@@ -4,12 +4,14 @@ import express from 'express';
 import mongoose from 'mongoose';
 import logger from './logger';
 import foodRoutes from '../route/food-router';
+import cuisineRoutes from '../route/cuisine-router';
 import errorMiddleware from './error-middleware';
 
 const app = express();
 let server = null;
 
 app.use(foodRoutes);
+app.use(cuisineRoutes);
 app.all('*', (request, response) => {
   logger.log(logger.INFO, 'SERVER: Returning a 404 from the catch-all/default route');
   return response.sendStatus(404);
