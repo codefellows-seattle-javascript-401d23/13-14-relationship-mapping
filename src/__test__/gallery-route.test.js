@@ -2,7 +2,7 @@
 
 import faker from 'faker';
 import superagent from 'superagent';
-import Gallery from '../model/gallery';
+import Gallery from '../model/gallery-model';
 import { startServer, stopServer } from '../lib/server';
 
 const apiURL = `http://localhost:${process.env.PORT}/api/gallerys`;

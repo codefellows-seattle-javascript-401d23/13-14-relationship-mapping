@@ -3,12 +3,12 @@ import mongoose from 'mongoose';
 const gallerySchema = mongoose.Schema({
   galleryName: {
     type: String,
-    required: true,
+    // required: true,
     unique: true,
   },
   artists: {
     type: String,
-    required: true,
+    // required: true,
   },
   residency: {
     type: String,
@@ -18,6 +18,13 @@ const gallerySchema = mongoose.Schema({
     type: Date,
     default: () => new Date(),
   },
+  painting: [
+    {
+      type: mongoose.Schema.Types.ObjectId, ref: 'painting',
+    },
+  ],
+}, {
+  usePushEach: true,
 });
 
 export default mongoose.model('gallery', gallerySchema);
