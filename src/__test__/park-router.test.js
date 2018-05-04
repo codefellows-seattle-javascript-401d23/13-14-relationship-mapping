@@ -141,7 +141,7 @@ describe('/api/parks', () => {
       return pCreateParkMock()
         .then((park) => {
           parkToTest = {
-            name: 'not long enough',
+            name: '',
             city: '1',
           };
           return superagent
