@@ -1,4 +1,4 @@
-Lab 13: Single Resource Mongo and Express API
+Lab 14: Express and Mongo two resource REST API
 
 **Author:** Jennifer Piper
 

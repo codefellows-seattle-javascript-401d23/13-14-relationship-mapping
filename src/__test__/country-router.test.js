@@ -2,32 +2,19 @@
 
 import faker from 'faker';
 import superagent from 'superagent';
-import Country from '../model/country';
 import { startServer, stopServer } from '../lib/server';
+import { pCreateCountryMock, pCreateManyCountryMocks, pRemoveCountryMock } from './lib/country-mock';
 import './lib/test.env';
 
 const apiURL = `http://localhost:${process.env.PORT}/api/v1/country`;
 
-const createCountryMock = () => {
-  return new Country({
-    name: faker.lorem.words(2),
-    continent: faker.lorem.words(2),
-    population: faker.lorem.words(3),
-    info: faker.lorem.words(10),
-  }).save();
-};
-
-const createManyCountryMocks = (howMany) => {
-  return Promise.all(new Array(howMany)
-    .fill(0)
-    .map(() => createCountryMock()));
-};
 
 describe('VALID request to the API', () => {
   describe('/api/v1/country', () => {
     beforeAll(startServer);
     afterAll(stopServer);
-    afterEach(() => Country.remove({}));
+    afterEach(pRemoveCountryMock);
+
     describe('POST /api/v1/country', () => {
       test('POST - 200 for successful resource creation', () => {
         const countryToPost = {
@@ -57,7 +44,7 @@ describe('VALID request to the API', () => {
           });
       });
       test('POST - 409 for duplicate key', () => {
-        return createCountryMock()
+        return pCreateCountryMock()
           .then((country) => {
             const countryToPost = {
               name: country.name,
@@ -77,7 +64,7 @@ describe('VALID request to the API', () => {
     describe('PUT /api/v1/country', () => {
       test('PUT - 200 for successful update', () => {
         let countryToUpdate = null;
-        return createCountryMock()
+        return pCreateCountryMock()
           .then((country) => {
             countryToUpdate = country;
             return superagent.put(`${apiURL}/${country._id}`)
@@ -99,7 +86,7 @@ describe('VALID request to the API', () => {
           });
       });
       test('PUT - 400 for bad request ', () => {
-        return createCountryMock()
+        return pCreateCountryMock()
           .then((country) => {
             return superagent.put(`${apiURL}/${country._id}`)
               .send({ name: '' });
@@ -109,7 +96,7 @@ describe('VALID request to the API', () => {
           });
       });
       test('PUT - 409 for duplicate key', () => {
-        return createManyCountryMocks(2)
+        return pCreateManyCountryMocks(2)
           .then((countriesArray) => {
             return superagent.put(`${apiURL}/${countriesArray[0]._id}`)
               .send({ name: countriesArray[1].name });
@@ -123,7 +110,7 @@ describe('VALID request to the API', () => {
     describe('GET /api/v1/country', () => {
       test('GET - 200 for successful retrieval by resource id', () => {
         let countryToTest = null;
-        return createCountryMock()
+        return pCreateCountryMock()
           .then((country) => {
             countryToTest = country;
             return superagent.get(`${apiURL}/${country._id}`);
@@ -153,7 +140,7 @@ describe('VALID request to the API', () => {
           });
       });
       test('DELETE - 204 for successful deletion', () => {
-        return createCountryMock()
+        return pCreateCountryMock()
           .then((country) => {
             return superagent.delete(`${apiURL}/${country._id}`);
           })
