@@ -1,29 +1,15 @@
 'use strict';
 
 import superagent from 'superagent';
-import Shape from '../model/shape';
 import { startServer, stopServer } from '../lib/server';
+import { pCreateShapeMock, pRemoveShapeMock } from './lib/shape-mock';
 
 const apiURL = `http://localhost:${process.env.PORT}/api/shapes`;
-
-const createShapeMock = () => {
-  return new Shape({
-    name: 'triangle',
-    sides: 3,
-  }).save();
-};
-
-const createShapeMock2 = () => {
-  return new Shape({
-    name: 'circle',
-    sides: 1,
-  }).save();
-};
 
 describe('/api/shapes', () => {
   beforeAll(startServer);
   afterAll(stopServer);
-  afterEach(() => Shape.remove({}));
+  afterEach(pRemoveShapeMock);
   test('POST - It should respond with a 200 status ', () => {
     const shapeToPost = {
       name: 'triangle',
@@ -51,7 +37,7 @@ describe('/api/shapes', () => {
   });
 
   test('POST 409 due to duplicate title', () => {
-    return createShapeMock()
+    return pCreateShapeMock()
       .then((shape) => {
         const mockShape = {
           name: shape.name,
@@ -87,7 +73,7 @@ describe('/api/shapes', () => {
   describe('PUT api/shapes', () => {
     test('200 for succcesful PUT', () => {
       let shapeToUpdate = null;
-      return createShapeMock()
+      return pCreateShapeMock()
         .then((shape) => {
           shapeToUpdate = shape;
           return superagent.put(`${apiURL}/${shape._id}`)
@@ -103,14 +89,10 @@ describe('/api/shapes', () => {
   });
 
   test('PUT 409 due to duplicate title', () => {
-    return createShapeMock()
+    return pCreateShapeMock()
       .then((shape) => {
-        const mockShape = {
-          name: shape.name,
-          sides: shape.sides,
-        };
         return superagent.put(`${apiURL}/${shape._id}`)
-          .send(mockShape);
+          .send({ name: shape.name });
       })
       .then(Promise.reject)
       .catch((err) => {
@@ -119,8 +101,11 @@ describe('/api/shapes', () => {
   });
 
   test('PUT 400 due to lack of title', () => {
-    return superagent.put(apiURL)
-      .send({})
+    return pCreateShapeMock()
+      .then((shape) => {
+        return superagent.put(`${apiURL}/${shape._id}`)
+          .send({});
+      })
       .then(Promise.reject)
       .catch((err) => {
         expect(err.status).toEqual(400);
@@ -128,12 +113,10 @@ describe('/api/shapes', () => {
   });
 
   test('PUT 400 due to bad json', () => {
-    let shapeToUpdate = null; // eslint-disable-line no-unused-vars
-    return createShapeMock()
+    return pCreateShapeMock()
       .then((shape) => {
-        shapeToUpdate = shape;
         return superagent.put(`${apiURL}/${shape._id}`)
-          .send('{');
+          .send('}');
       })
       .then(Promise.reject)
       .catch((err) => {
@@ -144,7 +127,7 @@ describe('/api/shapes', () => {
   describe('GET /api/shapes', () => {
     test('should respond with 200 if there are no errors', () => {
       let shapeToTest = null; 
-      return createShapeMock2()
+      return pCreateShapeMock()
         .then((shape) => {
           shapeToTest = shape;
           return superagent.get(`${apiURL}/${shape._id}`);
@@ -166,10 +149,8 @@ describe('/api/shapes', () => {
 
   describe('DELETE /api/shapes', () => {
     test('should respond with 204 if there are no errors', () => {
-      let shapeToTest = null; // eslint-disable-line no-unused-vars
-      return createShapeMock2()
+      return pCreateShapeMock()
         .then((shape) => {
-          shapeToTest = shape;
           return superagent.delete(`${apiURL}/${shape._id}`);
         })
         .then((response) => {

@@ -4,12 +4,14 @@ import express from 'express';
 import mongoose from 'mongoose';
 import logger from './logger';
 import shapeRoutes from '../route/shape-router';
+import sectionRoutes from '../route/section-router';
 import errorMiddleware from './error-middleware';
 
 const app = express();
 let server = null;
 
 app.use(shapeRoutes);
+app.use(sectionRoutes);
 
 app.all('*', (request, response) => {
   logger.log(logger.INFO, 'Returning a 404 from the catch-all/default route');

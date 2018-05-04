@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
 import HttpErrors from 'http-errors';
-import Shape from '../model/shape';
+import Shape from '../model/shape-model';
 import logger from '../lib/logger';
 
 const jsonParser = bodyParser.json();

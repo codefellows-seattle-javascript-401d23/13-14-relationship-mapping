@@ -13,6 +13,14 @@ const shapeSchema = mongoose.Schema({
   size: {
     type: String,
   },
+
+  sections: [
+    {
+      type: mongoose.Schema.Types.ObjectId, ref: 'section',
+    },
+  ],
+}, {
+  usePushEach: true,
 });
 
 export default mongoose.model('shape', shapeSchema);
