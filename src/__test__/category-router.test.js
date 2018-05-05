@@ -35,7 +35,7 @@ describe('api/categories', () => {
         });
     });
 
-    test.only('409 due to duplicate videoconsole', () => {
+    test('409 due to duplicate videoconsole', () => {
       return pCreateCategoryMock()
         .then((category) => {
           console.log(category);
