@@ -6,11 +6,15 @@ import Category from '../model/category';
 import { startServer, stopServer } from '../lib/server';
 
 const apiUrl = `http://localhost:${process.env.PORT}/api/categories`;
+const wrongUrl = `http://localhost:${process.env.PORT}/api/WRONGURL`;
+
 
 const pCreateCategoryMock = () => {
   return new Category({
     videoconsole: faker.lorem.words(15),
     videogame: faker.lorem.words(2),
+    genre: faker.lorem.words(5),
+    rating: faker.lorem.words(1),
   }).save();
 };
 
@@ -32,13 +36,14 @@ describe('api/categories', () => {
           expect(response.body._id).toBeTruthy();
           expect(response.body.videoconsole).toEqual(mockCategory.videoconsole);
           expect(response.body.videogame).toEqual(mockCategory.videogame);
+          expect(response.body.genre).toEqual(mockCategory.genre);
+          expect(response.body.rating).toEqual(mockCategory.rating);
         });
     });
 
     test('409 due to duplicate videoconsole', () => {
       return pCreateCategoryMock()
         .then((category) => {
-          console.log(category);
           const mockCategory = {
             videoconsole: category.videoconsole,
             videogame: category.videogame,
@@ -48,11 +53,9 @@ describe('api/categories', () => {
             .send(mockCategory);
         })
         .then(() => {
-          console.log('SOMETHING KOJWLKEJRKLEJRE');
           Promise.reject();
         })
         .catch((err) => {
-          console.log('SOMETHING SHOULD HAPPENSLKDJF:KSJFKJS:F', err);
           expect(err.status).toEqual(409);
         });
     });
@@ -92,6 +95,25 @@ describe('api/categories', () => {
           expect(response.body._id).toEqual(categoryToUpdate._id.toString());
         });
     });
+    test('should display a 404 due to a bad ID.', () => {
+      return superagent.get(`${apiUrl}/NOTANID`)
+        .then(Promise.reject)
+        .catch((res) => {
+          expect(res.status).toEqual(404);
+        });
+    });
+    test('should return status 400 due to invalid request', () => {
+      return pCreateCategoryMock()
+        .then((category) => {
+          return superagent.put(`${apiUrl}/${category._id}`)
+            .send({ videoconsole: '' });
+        })
+        // .then((res) => { console.log(res); });
+        .then(Promise.reject)
+        .catch((res) => {
+          expect(res.status).toEqual(400);
+        });
+    });
   });
 
   describe('GET /api/categories', () => {
@@ -106,6 +128,14 @@ describe('api/categories', () => {
               expect(response.body._id).toEqual(tempCategory._id.toString());
             });
         });
+        
+    });
+    test('should display a 404 due to an invalid request occurs.', () => {
+      return superagent.get(`${apiUrl}/NOTANID`)
+        .then(Promise.reject)
+        .catch((res) => {
+          expect(res.status).toEqual(404);
+        });
     });
   });
 
@@ -117,6 +147,26 @@ describe('api/categories', () => {
         })
         .then((response) => {
           expect(response.status).toEqual(204);
+          expect(response.body.videogame).toEqual();
+          expect(response.body.videoconsole).toEqual();
+          expect(response.body.genre).toEqual();
+          expect(response.body.rating).toEqual();
+        });
+    });
+    test('should display a 404 due to a bad ID.', () => {
+      return superagent.get(`${apiUrl}/NOTANID`)
+        .then(Promise.reject)
+        .catch((res) => {
+          expect(res.status).toEqual(404);
+        });
+    });
+  });
+  describe('unregistered route', () => {
+    test('should return 404 for trying to access an unregistered route', () => {
+      return superagent.post(wrongUrl)
+        .then(Promise.reject)
+        .catch((res) => {
+          expect(res.status).toEqual(404);
         });
     });
   });
