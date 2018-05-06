@@ -17,7 +17,7 @@ categoryRouter.post('/api/categories', jsonParser, (request, response, next) => 
     logger.log(logger.ERROR, 'CATEGORY-ROUTER: Responding with 400 error code');
     return next(new HttpErrors(400, 'Category videoconsole is required'));
   }
-console.log('MIDDLE OF POST');
+  console.log('MIDDLE OF POST');
   return new Category(request.body).save()
     .then((category) => {
       console.log('DID YOU HIT THE .THEN?');
@@ -30,12 +30,7 @@ categoryRouter.put('/api/categories/:id', jsonParser, (request, response, next) 
   const options = { runValidators: true, new: true };
   return Category.findByIdAndUpdate(request.params.id, request.body, options)
     .then((updatedCategory) => {
-      if (!updatedCategory) {
-        logger.log(logger.ERROR, 'CATEGORY ROUTER: responding with 404 status code - !updatedCategory');
-        return next(new HttpErrors(404, 'category not found'));
-      }
-
-      logger.log(logger.INFO, 'GET - responding with 200 status code');
+      logger.log(logger.INFO, 'ROUTER PUT: 200');
       return response.json(updatedCategory);
     })
     .catch(next);
@@ -44,13 +39,7 @@ categoryRouter.put('/api/categories/:id', jsonParser, (request, response, next) 
 categoryRouter.get('/api/categories/:id', (request, response, next) => {
   return Category.findById(request.params.id)
     .then((category) => {
-      if (!category) {
-        logger.log(logger.ERROR, 'CATEGORY ROUTER: responding with 404 status code !category');
-        return next(new HttpErrors(404, 'category not found'));
-      }
-
-      logger.log(logger.INFO, 'CATEGORY ROUTER: responding with 200 status code');
-      logger.log(logger.INFO, `CATEGORY ROUTER: ${JSON.stringify(category)}`);
+      logger.log(logger.INFO, 'CATEGORY ROUTER: 200');
       return response.json(category);
     })
     .catch(next);
@@ -58,15 +47,11 @@ categoryRouter.get('/api/categories/:id', (request, response, next) => {
 
 categoryRouter.delete('/api/categories/:id', (request, response, next) => {
   return Category.findByIdAndRemove(request.params.id)
-    .then((category) => {
-      if (!category) {
-        logger.log(logger.ERROR, 'CATEGORY ROUTER: responding with 404 !category');
-        return next(new HttpErrors(404, 'category not found'));
-      }
-
-      logger.log(logger.INFO, 'CATEGORY ROUTER: responding with 204 status code');
+    .then(() => {
+      logger.log(logger.INFO, 'CATEGORY ROUTER: 200');
       return response.sendStatus(204);
-    });
+    })
+    .catch(next);
 });
 
 export default categoryRouter;

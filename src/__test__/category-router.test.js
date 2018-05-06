@@ -114,6 +114,24 @@ describe('api/categories', () => {
           expect(res.status).toEqual(400);
         });
     });
+    test('should return status 409 due to duplicate key', () => {
+      return pCreateCategoryMock()
+        .then((category) => {
+          const mockCategory = {
+            videoconsole: category.videoconsole,
+            videogame: category.videogame,
+            _id: category._id,
+          };
+          return superagent.post(apiUrl)
+            .send(mockCategory);
+        })
+        .then(() => {
+          Promise.reject();
+        })
+        .catch((err) => {
+          expect(err.status).toEqual(409);
+        });
+    });
   });
 
   describe('GET /api/categories', () => {
