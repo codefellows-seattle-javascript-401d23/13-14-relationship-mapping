@@ -18,6 +18,13 @@ const gallerySchema = mongoose.Schema({
     type: Date,
     default: () => new Date(),
   },
+  painting: [
+    {
+      type: mongoose.Schema.Types.ObjectId, ref: 'painting',
+    },
+  ],
+}, {
+  usePushEach: true,
 });
 
 export default mongoose.model('gallery', gallerySchema);
