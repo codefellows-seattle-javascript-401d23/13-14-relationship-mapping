@@ -5,8 +5,9 @@ import Gallery from '../../model/gallery-model';
 
 const pCreateGalleryMock = () => {
   return new Gallery({
-    title: faker.lorem.words(15),
-    content: faker.lorem.words(2),
+    galleryName: faker.lorem.words(15),
+    artists: faker.lorem.words(2),
+    residency: faker.lorem.words(2),
   }).save();
 };
 

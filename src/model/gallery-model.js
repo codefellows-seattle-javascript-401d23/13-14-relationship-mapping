@@ -3,12 +3,12 @@ import mongoose from 'mongoose';
 const gallerySchema = mongoose.Schema({
   galleryName: {
     type: String,
-    // required: true,
+    required: true,
     unique: true,
   },
   artists: {
     type: String,
-    // required: true,
+    required: true,
   },
   residency: {
     type: String,
