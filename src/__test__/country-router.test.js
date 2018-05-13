@@ -4,7 +4,6 @@ import faker from 'faker';
 import superagent from 'superagent';
 import { startServer, stopServer } from '../lib/server';
 import { pCreateCountryMock, pCreateManyCountryMocks, pRemoveCountryMock } from './lib/country-mock';
-import './lib/test.env';
 
 const apiURL = `http://localhost:${process.env.PORT}/api/v1/country`;
 

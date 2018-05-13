@@ -5,9 +5,14 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "jest --forceExit --runInBand",
+    "test": "jest --coverage --forceExit --runInBand",
     "dbon": "mkdir -p ./db && mongod --dbpath ./db",
     "dboff": "killall mongod"
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/src/__test__/lib/test.env.js"
+    ]
   },
   "repository": {
     "type": "git",

@@ -1,11 +1,8 @@
 'use strict';
 
-import faker from 'faker';
 import superagent from 'superagent';
 import { startServer, stopServer } from '../lib/server';
-import { pCreateCountryMock } from './lib/country-mock';
 import { pCreateLandmarkMock, pRemoveLandmarkMock } from './lib/landmark-mock';
-import './lib/test.env';
 
 const apiURL = `http://localhost:${process.env.PORT}/api/v1/landmarks`;
 
@@ -13,7 +10,7 @@ describe('VALID request to the API', () => {
   describe('/api/v1/landmarks', () => {
     beforeAll(startServer);
     afterAll(stopServer);
-    afterEach(pRemoveLandmarkMock());
+    afterEach(pRemoveLandmarkMock);
 
     describe('GET /api/v1/landmarks', () => {
       test('GET - 200 for successful retrieval by resource id', () => {
@@ -21,14 +18,14 @@ describe('VALID request to the API', () => {
         return pCreateLandmarkMock()
           .then((landmarkMock) => {
             landmarkToTest = landmarkMock;
-            return superagent.get(`${apiURL}/${landmarkMock._id}`);
+            return superagent.get(`${apiURL}/${landmarkMock.landmark._id}`);
           })
           .then((response) => {
             expect(response.status).toEqual(200);
-            expect(response.body.name).toEqual(landmarkToTest.name);
-            expect(response.body.imageURL).toEqual(landmarkToTest.imageURL);
-            expect(response.body.info).toEqual(landmarkToTest.info);
-            expect(response.body.country).toEqual(landmarkToTest.country);
+            expect(response.body.name).toEqual(landmarkToTest.landmark.name);
+            expect(response.body.imageURL).toEqual(landmarkToTest.landmark.imageURL);
+            expect(response.body.info).toEqual(landmarkToTest.landmark.info);
+            expect(response.body.countryId).toEqual(landmarkToTest.landmark.countryId.toString());
           });
       });
       test('GET - 404 for id not found', () => {

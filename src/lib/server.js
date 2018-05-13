@@ -6,11 +6,14 @@ import mongoose from 'mongoose';
 import logger from './logger';
 import countryRouter from '../route/country-router';
 import errorMiddleware from './error-middleware';
+import landmarkRouter from '../route/landmark-router';
 
 const app = express();
+
 let server = null;
 
 app.use(countryRouter);
+app.use(landmarkRouter);
 
 app.all('*', (request, response) => {
   logger.log(logger.INFO, 'Returning a 404 from the catch-all/default route.');

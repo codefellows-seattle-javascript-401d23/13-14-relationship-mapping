@@ -1,12 +1,10 @@
 'use strict';
 
 import { Router } from 'express';
-import bodyParser from 'body-parser';
 import HttpError from 'http-errors';
 import logger from '../lib/logger';
 import Landmark from '../model/landmark';
 
-// const jsonParser = bodyParser.json();
 const landmarkRouter = new Router();
 
 landmarkRouter.get('/api/v1/landmarks/:id', (request, response, next) => {

@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose';
 import HttpError from 'http-errors';
-import Country from './landmark';
+import Country from './country';
 
 const landmarkSchema = mongoose.Schema({
   name: {
@@ -16,18 +16,18 @@ const landmarkSchema = mongoose.Schema({
   info: {
     type: String,
   },
-  country: {
+  countryId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'country',
+    ref: 'countryId',
   },
 });
 
 function landmarkPreHook(done) {
-  return Country.findById(this.country)
+  return Country.findById(this.countryId)
     .then((countryFound) => {
       if (!countryFound) {
-        throw new HttpError(404, 'country not found');
+        throw new HttpError(404, 'country id not found');
       }
       countryFound.landmarks.push(this._id);
       return countryFound.save();

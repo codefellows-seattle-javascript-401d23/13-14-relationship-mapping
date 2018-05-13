@@ -16,7 +16,7 @@ const pCreateLandmarkMock = () => {
         name: faker.lorem.words(2),
         imageURL: faker.lorem.words(2),
         info: faker.lorem.words(3),
-        country: createdCountry._id,
+        countryId: createdCountry._id,
       }).save();
     })
     .then((newLandmark) => {
