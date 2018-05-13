@@ -1,76 +1,76 @@
-![CF](https://camo.githubusercontent.com/70edab54bba80edb7493cad3135e9606781cbb6b/687474703a2f2f692e696d6775722e636f6d2f377635415363382e706e67) 13: Single Resource Mongo and Express API
+Lab 14: Express and Mongo two resource REST API
 ===
 
-## Submission Instructions
-* Read this document entirely and estimate how long this assignment will take.
-* Work in a fork of this repository
-* Work in a branch on your fork
-* Protect your repository's `master` branch by activating `continuous-integration/travis-ci` status checks
-* Create a pull request from your `lab` + `<your name>` branch to your `master` branch
-* Open a pull request to this repository
-* Submit on canvas a question and observation,your original estimate, how long you spent, and a link to your pull request
+**Author:** Jennifer Piper
 
-## Learning Objectives
-* students will be able to work with the MongoDB database management system
-* students will understand the primary concepts of working with a NoSQL database management system
-* students will be able to create custom data models *(schemas)* through the use of mongoose.js
-* students will be able to use mongoose.js helper methods for interacting with their database persistence layer
+This is a very simple REST API, to store and retrieve info about countries and associated landmarks. With help from Mongoose and Express, it will store name, continent, population, and info for each country, and name, imageURL, info, and countryId for each landmark.
 
-## Requirements
-### Configuration
-Configure the root of your repository with the following files and directories. Thoughtfully name and organize any additional configuration or module files.
-* **README.md** - contains documentation
-* **.env** - contains env variables **(should be git ignored)**
-* **.gitignore** - contains a [robust](http://gitignore.io) `.gitignore` file
-* **.eslintrc.json** - contains the course linter configuration
-* **.eslintignore** - contains the course linter ignore configuration
-* **.travis.yml** -
-* **package.json** - contains npm package config
-  * create a `test` script for running tests
-  * create `dbon` and `dboff` scripts for managing the mongo daemon
-* **db/** - contains mongodb files **(should be git ignored)**
-* **index.js** - entry-point of the application
-* **src/** - contains the remaining code
-  * **src/lib/** - contains module definitions
-  * **src/model/** - contains module definitions
-  * **src/route/** - contains module definitions
-  * **src/\_\_test\_\_/** - contains test modules
-  * **main.js** - starts the server
+## Getting Started
+In a node.js environment, from the root of this repo, install dependencies:
+* `npm i`
 
-## Feature Tasks
-For this assignment you will be building a RESTful HTTP server using express.
+Start the database server: 
+* `npm run dbon`
 
-### Model
-In the model/ directory create a Model for a resource using Mongoose (that is different from the class lecture resource). The model must include 4 properties, two of which should be required. Design your model so that it can have a relationship to a second model you will create tomorrow. It should be the `One` in a `One to Many` model relationship.
+And run tests (this starts the Node server before the tests, and stops it after the tests):
+* `npm run test`
 
-### Server Endpoints
-Create the following routes for performing CRUD operations on your resource
-* `POST /api/<resource-name>`
-  * pass data as stringifed JSON in the body of a **POST** request to create a new resource
-  * on success respond with a 200 status code and the created resource
-  * on failure due to a bad request send a 400 status code
-* `GET /api/<resource-name>/:id`
-  * should respond with the resource and a 200 on success
-    * if the id is not found respond with a 404
-* `PUT /api/<resource-name>/:id`
-  * should respond with the updated resource and a 200 on success
-    * if the id is not found respond with a 404
-    * if the request is invalid it should respond with a 400
-* `DELETE /api/<resource-name>/:id`
-  * the route should delete a resource with the given id
-  * on success this should return a 204 status code with no content in the body
-  * on failure due to a resource with that id not existing respond with a 404 status code
+To turn off the database server: 
+* `npm run dboff`
 
-### Tests
-* create a test that will ensure that your API returns a status code of 404 for routes that have not been registered
-* create a series of tests to ensure that your `/api/resource-name` endpoint responds as expected. A minimum set of tests suite must contain the following tests:
-  * POST should test for 200, 400, and 409 (if any keys are unique)
-  * GET should test for 200 and 404
-  * PUT should test for 200, 400, 404, and 409 (if any keys are unique)
-  * DELETE should test for 204 and 404
+## API Endpoints
 
-### Documentation
-In the README.md write documention for starting your server and making requests to each endpoint it provides. The documentation should describe how the server would respond to valid and invalid requests.
 
-## Stretch Goal
-* Create and test a GET route with pagination for returning an array of your resource.
+* To create a new country resource:
+
+  `POST /api/v1/country name='country name' continent='country continent' population='x million' info='known for exports of beer and fancy paper clips'`
+ 
+ 
+ On success, returns a 200 status code and a JSON object including a newly-generated id which can be used to retrieve that country.
+ On failure due to a bad request, returns a 400 status code.
+ 
+
+* To update a country by id, for example if id is '1234-5678':
+
+    `PUT /api/v1/country/1234-5678 info='This is updated info'`
+    
+On success, returns a 200 status code.
+If the id is not found, returns a 404 status code.
+  
+ * To retrieve a country by id, for example if id is '1234-5678':
+
+    `GET /api/v1/country/1234-5678`
+    
+On success, returns the JSON object representing that country.
+If the id is not found, returns a 404 status code.
+    
+ * To delete a country by id, for example if id is '1234-5678':
+  
+    `DELETE /api/v1/country/1234-5678`
+    
+On success, returns a 204 status code.
+If the id is not found, returns a 404 status code.
+    
+ * To create a new landmark resource for country with id '1234-5678': 
+ 
+ ```POST /api/v1/landmark name='landmark name' imageURL='http://foo.com/landmark.jpg' info='visit this amazing Landmark in Some Country!' countryId='1234-5678'```
+ 
+ On success, returns a 200 status code and a JSON object including a newly-generated id which can be used to retrieve that country.
+ On failure due to a bad request, returns a 400 status code.
+ 
+ 
+ * To retrieve a landmark by id, for example if id is '9012-3456':
+ 
+ `GET /api/v1/landmark/9012-3456`
+ 
+ On success, returns the JSON object representing that landmark.
+If the id is not found, returns a 404 status code.
+ 
+ 
+  * To delete a landmark by id, for example if id is '9012-3456':
+  
+  `DELETE /api/v1/landmark/9012-3456`
+  
+On success, returns a 204 status code.
+If the id is not found, returns a 404 status code.
+ 
