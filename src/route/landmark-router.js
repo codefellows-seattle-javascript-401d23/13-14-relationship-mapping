@@ -36,6 +36,15 @@ landmarkRouter.post('/api/v1/landmarks', jsonParser, (request, response, next) =
     })
     .catch(next);
 });
+landmarkRouter.delete('/api/v1/landmarks/:id', (request, response, next) => {
+  return Landmark.findByIdAndRemove(request.params.id)
+    .then((landmark) => {
+      if (!landmark) {
+        return next(new HttpError(404, 'landmark not found'));
+      }
+      return response.sendStatus(204);
+    });
+});
 
 export default landmarkRouter;
 
