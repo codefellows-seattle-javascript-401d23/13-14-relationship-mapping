@@ -2,22 +2,25 @@
 
 import faker from 'faker';
 import superagent from 'superagent';
-import City from '../model/city';
+// import City from '../model/city';
 import { startServer, stopServer } from '../lib/server';
+import { pCreateCityMock, pRemoveCityMock } from './lib/city-mock';
 
 const apiUrl = `http://localhost:${process.env.PORT}/api/cities`;
 
-const pCreateMockCity = () => {
-  return new City({
-    name: faker.lorem.words(2),
-    population: faker.random.number(),
-  }).save();
-};
+
+// const pCreateMockCity = () => {
+//   return new City({
+//     name: faker.lorem.words(2),
+//     population: faker.random.number(),
+//   }).save();
+// };
 
 describe('api/v1/cities', () => {
   beforeAll(startServer);
   afterAll(stopServer);
-  afterEach(() => City.remove({}));
+  afterEach(pRemoveCityMock);
+  // afterEach(() => City.remove({}));
 
   describe('POST api/cities', () => {
     test('respond with 200 status for a successful POST', () => {
@@ -35,7 +38,7 @@ describe('api/v1/cities', () => {
         });
     });
     test('409 due to duplicate name', () => {
-      return pCreateMockCity()
+      return pCreateCityMock()
         .then((city) => {
           const mockCity = {
             name: city.name,
@@ -70,7 +73,7 @@ describe('api/v1/cities', () => {
   describe('PUT api/cities', () => {
     test('respond with 200 status from a successful PUT', () => {
       let cityToUpdate = null;
-      return pCreateMockCity()
+      return pCreateCityMock()
         .then((city) => {
           cityToUpdate = city;
           return superagent.put(`${apiUrl}/${city._id}`)
@@ -85,10 +88,10 @@ describe('api/v1/cities', () => {
     });
     test('409 due to duplicate name', () => {
       let firstMock = null;
-      return pCreateMockCity()
+      return pCreateCityMock()
         .then((city) => {
           firstMock = city;
-          return pCreateMockCity();
+          return pCreateCityMock();
         })
         .then((secondCity) => {
           return superagent.put(`${apiUrl}/${secondCity._id}`)
@@ -119,7 +122,7 @@ describe('api/v1/cities', () => {
   describe('GET /api/cities', () => {
     test('should respond with 200 if there are no errors', () => {
       let cityToTest = null;
-      return pCreateMockCity()
+      return pCreateCityMock()
         .then((city) => {
           cityToTest = city;
           return superagent.get(`${apiUrl}/${city.id}`);
@@ -142,7 +145,7 @@ describe('api/v1/cities', () => {
 
   describe('DELETE /api/cities', () => {
     test('should delete a city and return a 204 status code', () => {
-      return pCreateMockCity()
+      return pCreateCityMock()
         .then((city) => {
           return superagent.delete(`${apiUrl}/${city.id}`);
         })
