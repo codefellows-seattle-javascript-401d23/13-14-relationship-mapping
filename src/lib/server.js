@@ -5,11 +5,13 @@ import mongoose from 'mongoose';
 import logger from './logger';
 import errorMiddleware from './error-middleware';
 import podcastRoutes from '../route/podcast-router';
+import episodeRoutes from '../route/episode-router';
 
 const app = express();
 let server = null;
 
 app.use(podcastRoutes);
+app.use(episodeRoutes);
 app.all('*', (req, res) => {
   logger.log(logger.INFO, 'Returning 404 from * route');
   return res.sendStatus(404);

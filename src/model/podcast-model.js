@@ -24,6 +24,8 @@ const podcastSchema = mongoose.Schema({
       ref: 'episode',
     },
   ],
+}, {
+  usePushEach: true,
 });
 
 export default mongoose.model('podcast', podcastSchema);
