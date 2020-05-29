@@ -1,76 +1,192 @@
-![CF](https://camo.githubusercontent.com/70edab54bba80edb7493cad3135e9606781cbb6b/687474703a2f2f692e696d6775722e636f6d2f377635415363382e706e67) 13: Single Resource Mongo and Express API
-===
+# Documentation
 
-## Submission Instructions
-* Read this document entirely and estimate how long this assignment will take.
-* Work in a fork of this repository
-* Work in a branch on your fork
-* Protect your repository's `master` branch by activating `continuous-integration/travis-ci` status checks
-* Create a pull request from your `lab` + `<your name>` branch to your `master` branch
-* Open a pull request to this repository
-* Submit on canvas a question and observation,your original estimate, how long you spent, and a link to your pull request
+This app allows users to create new Podcast and Episode instances (using defined mongoose Schemas) in the MongoDB database.
 
-## Learning Objectives
-* students will be able to work with the MongoDB database management system
-* students will understand the primary concepts of working with a NoSQL database management system
-* students will be able to create custom data models *(schemas)* through the use of mongoose.js
-* students will be able to use mongoose.js helper methods for interacting with their database persistence layer
+## Podcast routing functions
 
-## Requirements
-### Configuration
-Configure the root of your repository with the following files and directories. Thoughtfully name and organize any additional configuration or module files.
-* **README.md** - contains documentation
-* **.env** - contains env variables **(should be git ignored)**
-* **.gitignore** - contains a [robust](http://gitignore.io) `.gitignore` file
-* **.eslintrc.json** - contains the course linter configuration
-* **.eslintignore** - contains the course linter ignore configuration
-* **.travis.yml** -
-* **package.json** - contains npm package config
-  * create a `test` script for running tests
-  * create `dbon` and `dboff` scripts for managing the mongo daemon
-* **db/** - contains mongodb files **(should be git ignored)**
-* **index.js** - entry-point of the application
-* **src/** - contains the remaining code
-  * **src/lib/** - contains module definitions
-  * **src/model/** - contains module definitions
-  * **src/route/** - contains module definitions
-  * **src/\_\_test\_\_/** - contains test modules
-  * **main.js** - starts the server
+### .post()
+`Router.post('/api/podcasts', <json>)` : Will create a new Podcast in the database. When posting a new Podcast, the keys must be of the following types:
 
-## Feature Tasks
-For this assignment you will be building a RESTful HTTP server using express.
+    name: String (required, unique)
+    host: String (required)
+    genre: String
+    parentCompany: String
 
-### Model
-In the model/ directory create a Model for a resource using Mongoose (that is different from the class lecture resource). The model must include 4 properties, two of which should be required. Design your model so that it can have a relationship to a second model you will create tomorrow. It should be the `One` in a `One to Many` model relationship.
+Podcasts posted will be returned. Below is an example return:
 
-### Server Endpoints
-Create the following routes for performing CRUD operations on your resource
-* `POST /api/<resource-name>`
-  * pass data as stringifed JSON in the body of a **POST** request to create a new resource
-  * on success respond with a 200 status code and the created resource
-  * on failure due to a bad request send a 400 status code
-* `GET /api/<resource-name>/:id`
-  * should respond with the resource and a 200 on success
-    * if the id is not found respond with a 404
-* `PUT /api/<resource-name>/:id`
-  * should respond with the updated resource and a 200 on success
-    * if the id is not found respond with a 404
-    * if the request is invalid it should respond with a 400
-* `DELETE /api/<resource-name>/:id`
-  * the route should delete a resource with the given id
-  * on success this should return a 204 status code with no content in the body
-  * on failure due to a resource with that id not existing respond with a 404 status code
+    { episodes: [],
+      _id: '5aea496a38510421a83578e5',
+      name: 'Stuff You Should Know',
+      genre: 'Educational',
+      host: 'Josh Clark and Chuck Bryant',
+      parentCompany: 'How Stuff Works',
+      __v: 0 }
 
-### Tests
-* create a test that will ensure that your API returns a status code of 404 for routes that have not been registered
-* create a series of tests to ensure that your `/api/resource-name` endpoint responds as expected. A minimum set of tests suite must contain the following tests:
-  * POST should test for 200, 400, and 409 (if any keys are unique)
-  * GET should test for 200 and 404
-  * PUT should test for 200, 400, 404, and 409 (if any keys are unique)
-  * DELETE should test for 204 and 404
+  #### Possible status codes:
+  - 200: *Successful post*
+  - 400: *Required key was not provided*
+  - 409: *A key value was passed that is a duplicate of a unique key*
+  - 500: *Internal server error*
 
-### Documentation
-In the README.md write documention for starting your server and making requests to each endpoint it provides. The documentation should describe how the server would respond to valid and invalid requests.
+### .put()
+`Router.put('/api/podcasts/:id', <json>)` : Will update an existing podcast in the database (at id specified in query) and return updated podcast. Values sent for updating still need to conform to data types as listed above.
 
-## Stretch Goal
-* Create and test a GET route with pagination for returning an array of your resource.
+  #### Possible status codes:
+  - 200: *Successful update*
+  - 400: *Updated key was of invalid data type*
+  - 404: *ID passed was not found in database*
+  - 409: *A key value was passed that is a duplicate of a unique key*
+  - 500: *Internal server error*
+
+### .get()
+`Router.get('/api/podcasts/:id')` : This function will retrieve the podcast at the passed id and return it.
+
+  #### Possible status codes:
+  - 200: *Successful retrieval*
+  - 404: *ID passed was not found in database*
+  - 500: *Internal server error*
+  
+`Router.get('/api/podcasts/all/:page?')` : If no page number is passed, this will retrieve the first 10 podcasts in the database and return them. If a page number is passed, it will retrieve the 10 podcasts on that 'page'.
+ 
+  Example: <br/>
+  - `/api/podcasts/all`   --> Will return podcasts 0-9
+  - `/api/podcasts/all/2` --> Will return podcasts 10-19
+  - `/api/podcasts/all/3` --> Will return podcasts 20-29
+  
+  Example return of a single page:
+
+     [
+        { episodes: [5aeb9c99b089df388b479687, 5aeb9c99b089df388b479664],
+          _id: '5aea496a38510421a83578e5',
+          name: 'Stuff You Should Know',
+          genre: 'Educational',
+          host: 'Josh Clark and Chuck Bryant',
+          parentCompany: 'How Stuff Works',
+          __v: 0 },
+          
+        { episodes: [5aeb9c99b089df388b471864],
+          _id: '5aea906a38510421a83578e5',
+          name: 'My Favorite Murder',
+          genre: 'Comedy',
+          host: 'Karen Kilgariff and Georgia Hardstark',
+          parentCompany: '',
+          __v: 0 },
+          
+        { episodes: [5aeb9c99b089df388b479665, 5aeb9c99b089df388b479666, 5aeb9c99b089df388b479667],
+          _id: '5aea626a38510421a83578e5',
+          name: 'Serial',
+          genre: 'True Crime',
+          host: 'Sarah Koenig',
+          parentCompany: 'NPR',
+          __v: 0 }
+     ]  
+
+   #### Possible status codes:
+   - 200: *Successful retrieval*
+   - 500: *Internal server error*
+
+### .delete()
+`Router.delete('/api/podcasts/:id')` : Will delete a podcast at the id passed and return an empty object.
+
+  #### Possible status codes:
+  - 204: *Successful delete*
+  - 404: *ID passed was not found in database*
+  - 500: *Internal server error*
+
+
+## Episode routing functions
+
+### .post()
+`Router.post('/api/episodes', <json>)` : Will create a new episode in the database. When posting a new Episode, the keys must be of the following types:
+
+    title: String (required, unique)
+    description: String
+    timestamp: Date (defaults to new Date)
+    podcast: id of Podcast (required)
+
+Episodes posted will be returned. Below is an example return:
+
+    { _id: 5aeb9c99b089df388b479687,
+      title: 'Does Pyromania Actually Exist?',
+      description: 'A fascination with fire is part of every kid's childhood...',
+      podcast: 5aea496a38510421a83578e5,
+      timestamp: 2018-05-03T23:34:49.436Z,
+      __v: 0 } 
+
+  #### Possible status codes:
+  - 200: *Successful post*
+  - 400: *Required key was not provided*
+  - 409: *A key value was passed that is a duplicate of a unique key*
+  - 500: *Internal server error*
+
+### .put()
+`Router.put('/api/episodes/:id', <json>)` : Will update an existing episode in the database (at id specified in query) and return updated episode. Values sent for updating still need to conform to data types as listed above.
+
+  #### Possible status codes:
+  - 200: *Successful update*
+  - 400: *Updated key was of invalid data type*
+  - 404: *ID passed was not found in database*
+  - 409: *A key value was passed that is a duplicate of a unique key*
+  - 500: *Internal server error*
+
+### .get()
+`Router.get('/api/episodes/:id')` : This function will retrieve the episode at the passed id and return it.
+
+  #### Possible status codes:
+  - 200: *Successful retrieval*
+  - 404: *ID passed was not found in database*
+  - 500: *Internal server error*
+  
+`Router.get('/api/episodes/all/')` : This will retrieve all the episodes of all podcasts in the database.
+  
+  Example return:
+
+     [
+        { _id: 5aeb9c99b089df388b479687,
+          title: 'Does Pyromania Actually Exist?',
+          description: 'A fascination with fire is part of every kid's childhood...',
+          podcast: 5aea496a38510421a83578e5,
+          timestamp: 2018-05-03T23:34:49.436Z,
+          __v: 0 } 
+          
+        { _id: 5aeb9c99b089df388b479688,
+          title: 'How Mirrors Work',
+          description: 'Whether using polished metal surfaces or clear glass...',
+          podcast: 5aea496a38510421a83578e5,
+          timestamp: 2018-04-23T23:07:49.436Z,
+          __v: 0 } 
+          
+        { _id: 5aeb9c99b089df388b479665,
+          title: 'S01 Episode 01: The Alibi',
+          description: 'It's Baltimore, 1999. Hae Min Lee, a popular high school sernior...',
+          podcast: 5aea626a38510421a83578e5,
+          timestamp: 2018-04-23T23:07:49.436Z,
+          __v: 0 } 
+     ]  
+
+   #### Possible status codes:
+   - 200: *Successful retrieval*
+   - 500: *Internal server error*
+
+### .delete()
+`Router.delete('/api/podcasts/:id')` : Will delete an episode at the id passed and return an empty object.
+
+  #### Possible status codes:
+  - 204: *Successful delete*
+  - 404: *ID passed was not found in database*
+  - 500: *Internal server error*
+
+## Starting and Stopping the Server
+`startServer` : Connects to the MongoDB URI via mongoose and starts the server listening.
+
+`stopServer` : Disconnects from mongoose and closes the server.
+
+## Testing
+To test, run the following commands in your terminal:
+
+       npm run dbon
+       npm run test
+
+When finished, run:
+
+       npm run dboff
